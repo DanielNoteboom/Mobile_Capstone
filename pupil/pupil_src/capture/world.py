@@ -52,9 +52,10 @@ from pupil_server import Pupil_Server
 from pupil_remote import Pupil_Remote
 from marker_detector import Marker_Detector
 from fixation_detector import Fixation_Detector, Dispersion_Fixation_Detector
+from plugin481 import ClickDetect
 
 #manage plugins
-user_launchable_plugins = [Show_Calibration,Pupil_Server,Pupil_Remote,Marker_Detector] # TODO: Dispersion_Fixation_Detector
+user_launchable_plugins = [Show_Calibration,Pupil_Server,Pupil_Remote,Marker_Detector,ClickDetect] # TODO: Dispersion_Fixation_Detector
 system_plugins  = [Display_Recent_Gaze,Recorder]
 plugin_by_index =  user_launchable_plugins+system_plugins+calibration_plugins+gaze_mapping_plugins
 name_by_index = [p.__name__ for p in plugin_by_index]
