@@ -252,6 +252,8 @@ def world(g_pool,cap_src,cap_size):
     #plugins that are loaded based on user settings from previous session
     g_pool.plugins = Plugin_List(g_pool,plugin_by_name,session_settings.get('loaded_plugins',default_plugins))
 
+    new_plugin = ClickDetect(g_pool)
+    g_pool.plugins.add(new_plugin)
     #only needed for the gui to show the loaded calibration type
     for p in g_pool.plugins:
         if p.base_class_name == 'Calibration_Plugin':
