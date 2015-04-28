@@ -234,6 +234,7 @@ class Recorder(Plugin):
             self.info_menu = None
 
     def update(self,frame,events):
+        print "In recorder"
         if self.running:
             if not self.writer:
                 self.writer = cv2.VideoWriter(self.video_path, cv2.cv.CV_FOURCC(*'DIVX'), float(self.g_pool.capture.frame_rate), (frame.width,frame.height))
@@ -247,6 +248,7 @@ class Recorder(Plugin):
 
             for g in events.get('gaze',[]):
                 gaze_pos = g['timestamp'],g['confidence'],g['norm_pos'][0],g['norm_pos'][1]
+                print gaze_pos #TODO important
                 self.gaze_list.append(gaze_pos)
 
             self.timestamps.append(frame.timestamp)

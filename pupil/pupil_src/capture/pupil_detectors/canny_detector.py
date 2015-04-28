@@ -101,6 +101,7 @@ class Canny_Detector(Pupil_Detector):
     def detect(self,frame,user_roi,visualize=False):
 
         def early_exit():
+            print "early exit"
             return {'norm_pos':(0,0),'diameter':0,'timestamp':frame.timestamp,'confidence':0}
 
         u_r = user_roi

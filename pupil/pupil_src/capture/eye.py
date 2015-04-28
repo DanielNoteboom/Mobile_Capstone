@@ -297,6 +297,7 @@ def eye(g_pool,cap_src,cap_size,rx_from_world,eye_id=0):
                 del timestamps
 
         if writer:
+            print type(frame.img)
             writer.write(frame.img)
             timestamps.append(frame.timestamp)
 

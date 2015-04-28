@@ -47,6 +47,7 @@ class Vis_Circle(Plugin):
 
         pts = [denormalize(pt['norm_gaze'],frame.img.shape[:-1][::-1],flip_y=True) for pt in events['pupil_positions'] if pt['norm_gaze'] is not None]
         for pt in pts:
+            print pt 
             transparent_circle(frame.img, pt, radius=self.radius, color=(self.b, self.g, self.r, self.a), thickness=thickness)
 
     def init_gui(self):

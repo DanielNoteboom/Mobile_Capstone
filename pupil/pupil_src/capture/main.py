@@ -11,7 +11,6 @@
 import sys, os, platform
 from time import sleep
 from ctypes import c_bool, c_double
-
 if platform.system() == 'Darwin':
     from billiard import Process, Pipe, Queue, Value, freeze_support, forking_enable
 else:
@@ -43,6 +42,8 @@ if not os.path.isdir(rec_dir):
 from version_utils import get_version
 
 import logging
+from plugin481 import ClickDetect
+
 # Set up root logger for the main process before doing imports of logged modules.
 logger = logging.getLogger()
 if 'debug' in sys.argv:
@@ -113,6 +114,10 @@ def main():
 
     #g_pool holds variables. Only if added here they are shared across processes.
     g_pool = Global_Container()
+    
+    #Initialize clickdetect plugin
+
+
 
     # Create and initialize IPC
     g_pool.pupil_queue = Queue()
@@ -147,3 +152,4 @@ def main():
 if __name__ == '__main__':
     freeze_support()
     main()
+

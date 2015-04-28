@@ -21,7 +21,7 @@ import os, sys,platform
 from file_methods import Persistent_Dict
 import logging
 import numpy as np
-
+from plugin481 import ClickDetect
 #display
 from glfw import *
 from pyglui import ui,graph,cygl
@@ -54,13 +54,16 @@ from marker_detector import Marker_Detector
 from fixation_detector import Fixation_Detector, Dispersion_Fixation_Detector
 from plugin481 import ClickDetect
 
+from plugin481 import ClickDetect
+
 #manage plugins
 user_launchable_plugins = [Show_Calibration,Pupil_Server,Pupil_Remote,Marker_Detector,ClickDetect] # TODO: Dispersion_Fixation_Detector
-system_plugins  = [Display_Recent_Gaze,Recorder]
+system_plugins  = [Display_Recent_Gaze, Recorder, ClickDetect]
 plugin_by_index =  user_launchable_plugins+system_plugins+calibration_plugins+gaze_mapping_plugins
 name_by_index = [p.__name__ for p in plugin_by_index]
+print name_by_index
 plugin_by_name = dict(zip(name_by_index,plugin_by_index))
-default_plugins = [('Dummy_Gaze_Mapper',{}),('Display_Recent_Gaze',{}), ('Screen_Marker_Calibration',{}),('Recorder',{})]
+default_plugins = [('Dummy_Gaze_Mapper',{}),('Display_Recent_Gaze',{}), ('Screen_Marker_Calibration',{}),('Recorder',{}), ('ClickDetect',{})]
 
 # create logger for the context of this function
 logger = logging.getLogger(__name__)
@@ -80,7 +83,7 @@ def world(g_pool,cap_src,cap_size):
     Receives Pupil coordinates from eye process[es]
     Can run various plug-ins.
     """
-
+ 
     # Callback functions
     def on_resize(window,w, h):
         active_window = glfwGetCurrentContext()
@@ -172,6 +175,9 @@ def world(g_pool,cap_src,cap_size):
         logger.debug('Open Plugin: %s'%plugin)
         new_plugin = plugin(g_pool)
         g_pool.plugins.add(new_plugin)
+        print "in open plugin"
+        print type(plugin)
+        print plugin
 
     def set_scale(new_scale):
         g_pool.gui.scale = new_scale
@@ -251,7 +257,8 @@ def world(g_pool,cap_src,cap_size):
 
     #plugins that are loaded based on user settings from previous session
     g_pool.plugins = Plugin_List(g_pool,plugin_by_name,session_settings.get('loaded_plugins',default_plugins))
-
+    new_plugin = ClickDetect(g_pool)
+    g_pool.plugins.add(new_plugin)
     #only needed for the gui to show the loaded calibration type
     for p in g_pool.plugins:
         if p.base_class_name == 'Calibration_Plugin':
@@ -281,7 +288,7 @@ def world(g_pool,cap_src,cap_size):
     pupil_graph = graph.Bar_Graph(max_val=1.0)
     pupil_graph.pos = (260,130)
     pupil_graph.update_rate = 5
-    pupil_graph.label = "Confidence: %0.2f"
+    pupil_graph.label = "Confidences: %0.2f"
 
     # Event loop
     while not g_pool.quit.value:
