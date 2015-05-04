@@ -65,3 +65,5 @@ for i in range(len(matches)):
   outfile.write( "crop%d.jpg %s\n" % (i, str(dist)) )
 
     
+if len(matches) == 0:
+  print "no matches found"
