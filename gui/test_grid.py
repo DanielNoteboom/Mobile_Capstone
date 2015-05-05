@@ -59,9 +59,9 @@ class Example(Frame):
         frame.grid(row=0, column=0)
         #frame.pack()
 
-        cls = Button(self, text="capture gaze", command=capture)
+        cls = Button(self, text="Capture Gaze", command=capture)
         cls.grid(row=1, column=0)
-        bck = Button(self, text="Other method", command=other)
+        bck = Button(self, text="Focus Camera", command=other)
         bck.grid(row=1, column=1)
 
         

@@ -1,0 +1,8 @@
+
+*.jpg
+*.JPG
+.DS_Store
+*.swp
+*~
+*.pyc
+current_count.txt
