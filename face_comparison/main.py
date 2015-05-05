@@ -30,16 +30,18 @@ if os.path.isfile(test):
         for i in range(NUM_MATCHES):
         	try:
         		match = matches.get_nowait()
-        		hits.append(match[1])
-        		print match
+        		hits.append(match)
+        		#print match
         	except Queue.Empty:
         		break
 
-        #outfile = open("face_compare_info.txt", "w")
+        outfile = open("face_compare_info.txt", "w")
 
-        #size = len(hits)
-        #outfile.write(str(size)) + "\n")
-		#for i in range(size):
+        outfile.write(str(len(hits)) + "\n")
+        for hit in hits:
+            index = -hit[0]
+            name  = hit[1]
+            outfile.write("%s %s\n" % (name, str(index)))
 else:
 	print "Test image " + test + " not found"
 	sys.exit(0)

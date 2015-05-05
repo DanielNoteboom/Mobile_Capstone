@@ -3,7 +3,7 @@
 import os
 import time
 import sys
-
+COUNT = 10
 def main():
   runPupil()
   picture, coord = takeSnapshot()
@@ -40,12 +40,17 @@ def take_snapshot():
 
 '''find the coordinates in the most recent file possible'''
 def find_coordinates(coord, pic_num):
-  while len(coord) != 4 and pic_num > 0:
+  count = COUNT
+  adj_pic_num = pic_num
+  while len(coord) != 4 and count > 0:
     pic_num = int(pic_num) - 1
-    pic_coord_file = "../pupil/pupil_src/capture/pic/pic" + str(pic_num) + ".txt"
+    count = count- 1
+    if pic_num < 0:
+      adj_pic_num = COUNT + pic_num
+    pic_coord_file = "../pupil/pupil_src/capture/pic/pic" + str(adj_pic_num) + ".txt"
     f = open(pic_coord_file, 'r')
     coord = f.readline().split()
-  if pic_num == 0:
+  if count == 0:
     print "Please plug-in pupil player, place on face, and make sure camera is focused"
     sys.exit(1)
 
