@@ -50,14 +50,18 @@ class Example(Frame):
         #self.rowconfigure(3,pad=3)
         #self.rowconfigure(4,pad=3)
 
+        def capture():
+          external_method1()
+        def other():
+          external_method2()
 
         frame = Frame(self, relief=RAISED, borderwidth=20)
         frame.grid(row=0, column=0)
         #frame.pack()
 
-        cls = Button(self, text="Cls")
+        cls = Button(self, text="capture gaze", command=capture)
         cls.grid(row=1, column=0)
-        bck = Button(self, text="Back")
+        bck = Button(self, text="Other method", command=other)
         bck.grid(row=1, column=1)
 
         
@@ -76,10 +80,6 @@ class Example(Frame):
 #        #frame2 = Frame(self, relief=RAISED, borderwidth=15)
 #        #frame2.pack(fill=BOTH, expand=1)
 #
-#        def capture():
-#          external_method1()
-#        def other():
-#          external_method2()
 #
 #        cb = Button(self, text="Capture Gaze", command=capture)
 #        cb.grid(row=1,column=0)
