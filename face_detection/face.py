@@ -65,24 +65,5 @@ for i in range(len(matches)):
   outfile.write( "crop%d.jpg %s\n" % (i, str(dist)) )
 
     
-#  Test code 
-#x,y,w,h = closest
-##print img.shape
-##print img.ndim
-##print img
-#crop_img = img[y:(y+h),x:(x+w)]
-##print type(crop_img)
-##print type(img)
-#cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-#roi_gray = gray[y:y+h, x:x+w]
-#roi_color = img[y:y+h, x:x+w]
-##  output the name(s) of the cropped images, and their distances
-#out_file = open("face_detect_info.txt","w")
-#out_file.write("crop1.jpg " + str(closest_distance))
-#cv2.imwrite("saved.jpg", crop_img)
-#
-#cv2.imshow('img',img)
-## waits for any key to be pressed (with image as active window)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()
-#
+if len(matches) == 0:
+  print "no matches found"
