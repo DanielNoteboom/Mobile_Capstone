@@ -6,7 +6,7 @@ zetcode.com/gui/tkinter/layout/
 """
 import os
 import time
-#os.system("source ~/.bashrc")
+
 
 
 from PIL import Image, ImageTk
@@ -14,7 +14,7 @@ from Tkinter import Tk, W,E, Label, BOTH, RIGHT, RAISED
 from ttk import Frame, Style, Button
 from ttk import Entry
 
-from mock_gui import take_snapshot, run_pupil, facial_detection
+from gui_helper import take_snapshot, run_pupil, facial_detection
 
 
 

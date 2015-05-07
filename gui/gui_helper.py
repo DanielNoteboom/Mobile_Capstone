@@ -5,6 +5,8 @@
 import os
 import time
 import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), "../face_detection/"))
+from face import get_top_matches
 
 COUNT = 10
 '''sample main method that runs through all the components 
@@ -72,9 +74,8 @@ pic_file: picture that you're looking for faces in
 coord: coordinate looking for face
 return: tuple of files that contain top matches'''
 def facial_detection(pic_file, coord):
-  #abin3@  235lkndfoibn
-  print "hi"
-  os.system("identify ~/Mobile_Capstones/pupil/pupil_src/capture/pic/"+pic_file + " > output.txt")
+
+  os.system("identify pic_file > output.txt")
   print "Picture file:  " + pic_file
   f = open("output.txt", 'r')
   image_size = f.readline().split()[2]
