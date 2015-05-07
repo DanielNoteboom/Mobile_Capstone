@@ -1,13 +1,23 @@
-#This file is meant to demonstrate the ability to start the pupil player, grab a snapshot at aspecified time and run the program to get the top three matches. All the gui aspects that interact with the external environment in one program
 
+# This file contains some funcitons that are called by the gui
+
+  
 import os
 import time
 import sys
+#  need access to parent for import
+#sys.path.insert(0,os.path.pardir)
+#from Mobile_Capstones.face_detection.face import get_top_matches
+
+
+#get_top_matches()
+
 COUNT = 10
 def main():
-  runPupil()
-  picture, coord = takeSnapshot()
-  facial_detection(picture, coord)
+  run_pupil()
+
+  #picture, coord = take_snapshot()
+  #facial_detection(picture, coord)
 
 '''Method that runs the pupil player'''
 def run_pupil():
@@ -15,9 +25,9 @@ def run_pupil():
   #Run pupil in the background with new process(have to kill later somehow...)
   if newpid == 0:
     os.execv("../pupil/run_capture", ['foo'])
-  else:
+  #else:
   #Give the pupil player time to load up
-    time.sleep(20)
+  #  time.sleep(5)
 
 '''Grabs the latest snapshot from the pupil player
 Returns: picture and coordinates of image'''
@@ -33,7 +43,7 @@ def take_snapshot():
   f = open(pic_coord_file, 'r')
   coord = f.readline().split()
   
-  coord = findCoordinates(coord, pic_num)
+  coord = find_coordinates(coord, pic_num)
   
   return (pic_file, coord)
 
@@ -56,7 +66,10 @@ def find_coordinates(coord, pic_num):
 
 '''detects the face given the picture file and the coordinate'''
 def facial_detection(pic_file, coord):
-  os.system("identify ~/Mobile_Capstones/pupil/pupil_src/capture/pic/pic3535.jpg > output.txt")
+  #abin3@  235lkndfoibn
+  print "hi"
+  os.system("identify ~/Mobile_Capstones/pupil/pupil_src/capture/pic/"+pic_file + " > output.txt")
+  print "Picture file:  " + pic_file
   f = open("output.txt", 'r')
   image_size = f.readline().split()[2]
   image_dim = image_size.split("x")
