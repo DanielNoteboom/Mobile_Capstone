@@ -12,10 +12,6 @@ def get_top_matches(picture, x_coord, y_coord):
   def find_distance(x1,y1,x2,y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
   
-  #if len(sys.argv) != 4:
-    #print "Usage: python face.py PICTURE X-COORD Y-COORD"
-    #sys.exit(0)
-
   # coordinates of the image here are from the upper left, with 
   face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt2.xml')
   
