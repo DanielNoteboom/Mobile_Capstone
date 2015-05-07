@@ -10,7 +10,7 @@ def main():
   facial_detection(picture, coord)
 
 '''Method that runs the pupil player'''
-def runPupil():
+def run_pupil():
   newpid = os.fork()
   #Run pupil in the background with new process(have to kill later somehow...)
   if newpid == 0:
@@ -21,7 +21,7 @@ def runPupil():
 
 '''Grabs the latest snapshot from the pupil player
 Returns: picture and coordinates of image'''
-def takeSnapshot():
+def take_snapshot():
   #This file contains the number of the current snapshot captured by the pupil player
   f = open("../pupil/pupil_src/capture/pic/current_count.txt", 'r')
   pic_num = f.readline().strip();
@@ -39,7 +39,7 @@ def takeSnapshot():
 
 
 '''find the coordinates in the most recent file possible'''
-def findCoordinates(coord, pic_num):
+def find_coordinates(coord, pic_num):
   count = COUNT
   adj_pic_num = pic_num
   while len(coord) != 4 and count > 0:
@@ -55,7 +55,7 @@ def findCoordinates(coord, pic_num):
     sys.exit(1)
 
 '''detects the face given the picture file and the coordinate'''
-def facialDetection(pic_file, coord):
+def facial_detection(pic_file, coord):
   os.system("identify ~/Mobile_Capstones/pupil/pupil_src/capture/pic/pic3535.jpg > output.txt")
   f = open("output.txt", 'r')
   image_size = f.readline().split()[2]
@@ -64,7 +64,8 @@ def facialDetection(pic_file, coord):
   y_coord = int(float(coord[3]) * int(image_dim[1]))
   print x_coord
   print y_coord
-  os.system("python ../face_detection/face.py " +  pic_file + " " +  str(x_coord) + " " + str(y_coord))
+  matches = get_top_matches(pic_file, x_coord, y_coord)
+  #os.system("python ../face_detection/face.py " +  pic_file + " " +  str(x_coord) + " " + str(y_coord))
   cleanup()
   print "done"
 

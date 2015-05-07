@@ -14,7 +14,7 @@ from Tkinter import Tk, W,E, Label, BOTH, RIGHT, RAISED
 from ttk import Frame, Style, Button
 from ttk import Entry
 
-from test_script import external_method1, external_method2
+from mock_gui import take_snapshot, run_pupil, facial_detection
 
 
 
@@ -42,8 +42,7 @@ class Example(Frame):
         print "Loading... please wait"  
 
     def initUI(self):
-      # Fork pupil capture
-      #launch_pupil()
+      run_pupil()
 
 
       self.parent.title("Student Name Recollection Helper")
@@ -65,33 +64,40 @@ class Example(Frame):
       #self.rowconfigure(3,pad=3)
       #self.rowconfigure(4,pad=3)
 
-
-      frame = Frame(self, relief=RAISED, borderwidth=20)
-      frame.grid(row=0, column=0)
-      #frame.pack()
-
-      f2 = Frame(frame, relief=RAISED, borderwidth=10)
-      f2.pack(fill=BOTH, expand=1)
-      f3 = Frame(frame, relief=RAISED, borderwidth=10)
-      f3.pack(fill=BOTH, expand=1)
-
-      cls = Button(f2, text="Cls")
-      #cls.pack(fill=BOTH, expand=1)
-      bck = Button(f3, text="Back")
-      #bck.grid(fill=BOTH, expand=1)
-
-
       self.pack()
 
       def capture():
-        external_method1()
+        pic_file, coord = take_snapshot()
+        facial_detection(pic_file, coord)
+
+
       def other():
         external_method2()
 
-      cb = Button(self, text="Find Name", command=capture)
-      cb.grid(row=1,column=0)
+      #frame = Frame(self, relief=RAISED, borderwidth=20)
+      #frame.grid(row=0, column=0)
+
+      
+      b2 = Button(self, text="Loading", command=other)
+      b2.grid(row=0,column=0)
+      #frame.pack()
+
+      #f2 = Frame(frame, relief=RAISED, borderwidth=10)
+      #f2.pack(fill=BOTH, expand=1)
+      ##f3 = Frame(frame, relief=RAISED, borderwidth=10)
+      #f3.pack(fill=BOTH, expand=1)
+
+      #cls = Button(f2, text="Cls")
+      ##cls.pack(fill=BOTH, expand=1)
+      #bck = Button(f3, text="Back")
+      ##bck.grid(fill=BOTH, expand=1)
+
+
+
       #cb.pack(side=RIGHT, padx=5,pady=5)
       b2 = Button(self, text="Focus camera", command=other)
+      b2.grid(row=1,column=0)
+      cb = Button(self, text="Capture Gaze", command=capture)
       cb.grid(row=1,column=1)
       #b2.pack(side=RIGHT, padx=5,pady=5)
             
