@@ -12,10 +12,6 @@ def get_top_matches(picture, x_coord, y_coord):
   def find_distance(x1,y1,x2,y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
   
-  #if len(sys.argv) != 4:
-    #print "Usage: python face.py PICTURE X-COORD Y-COORD"
-    #sys.exit(0)
-
   # coordinates of the image here are from the upper left, with 
   face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt2.xml')
   
@@ -37,7 +33,15 @@ def get_top_matches(picture, x_coord, y_coord):
     #   since tuples are compared lexicographically
     best_matches.put((distance, (x,y,w,h)))
   
+  matches = queue_to_list(best_matches, NUM_MATCHES)
   
+  result = []
+  write_matches(matches, result)
+  return result
+  
+      
+## changes priority queue to a list
+def queue_to_list(q, list_size)
   # get a list of matches out of the queue
   matches = []
   for i in range(NUM_MATCHES):
@@ -46,16 +50,12 @@ def get_top_matches(picture, x_coord, y_coord):
       matches.append(match)
     except Queue.Empty:
       break
-  
-  #  output the name(s) of the cropped images, and their distances, to a
-  #   a file. The first line of file indicates number of matches. This 
-  #   should normally be NUM_MATCHES, but could possibly be less if
-  #   there are fewer found. 
-  #  Format of each line:  <match_image_filename> <distance_of_match>
-  
 
-  result = []
-  
+
+# Takes a list of matches, saves image files for them,
+#  appends the image file name and the associated distance
+#  to a result list
+def write_matches(matches, result_list)
   for i in range(len(matches)):
     dist = matches[i][0]
     x,y,w,h = matches[i][1]
@@ -64,6 +64,6 @@ def get_top_matches(picture, x_coord, y_coord):
     # Distance might taken into account later
     result.append(("crop%d.jpg"%i, dist))
 
-  return result
-  
-      
+
+
+
