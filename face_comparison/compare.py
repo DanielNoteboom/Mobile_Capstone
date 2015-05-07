@@ -23,7 +23,7 @@ def compare( test, cDir ):
         for i in range(NUM_MATCHES):
             try:
                 match = matches.get_nowait()
-                hits.append(match)
+                hits.append((match[1],-match[0]))
             except Queue.Empty:
             	break
         return hits
@@ -44,7 +44,7 @@ if len(sys.argv) != NUM_MATCHES:
     print "Usage: python main.py IMAGE_PATH COMPARISON_DIRECTORY"
     sys.exit(0)
 else:
-    compare(sys.argv[1], sys.argv[2])
+    matches = compare(sys.argv[1], sys.argv[2])
     print matches
 # turn into single function
 # return a array of tuples with the image name and correlation
