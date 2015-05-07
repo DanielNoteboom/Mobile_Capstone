@@ -1,5 +1,7 @@
-#This file is meant to demonstrate the ability to start the pupil player, grab a snapshot at aspecified time and run the program to get the top three matches. All the gui aspects that interact with the external environment in one program
 
+# This file contains some funcitons that are called by the gui
+
+  
 import os
 import time
 import sys
@@ -12,16 +14,16 @@ def main():
   picture, coord = take_snapshot()
   facial_detection(picture, coord)
 
-'''Runs the pupil player in a separte process'''
+'''Runs the pupil player in a separate process'''
 #TODO Kill process when program is done
 def run_pupil():
   newpid = os.fork()
   #Run pupil in the background with new process(have to kill later somehow...)
   if newpid == 0:
     os.execv("../pupil/run_capture", ['foo'])
-  else:
+  #else:
   #Give the pupil player time to load up
-    time.sleep(20)
+  #  time.sleep(5)
 
 '''Captures the latest snapshot from the pupil player
 Returns: picture and coordinates of image'''
@@ -70,7 +72,10 @@ pic_file: picture that you're looking for faces in
 coord: coordinate looking for face
 return: tuple of files that contain top matches'''
 def facial_detection(pic_file, coord):
-  os.system("identify ~/Mobile_Capstones/pupil/pupil_src/capture/pic/pic3535.jpg > output.txt")
+  #abin3@  235lkndfoibn
+  print "hi"
+  os.system("identify ~/Mobile_Capstones/pupil/pupil_src/capture/pic/"+pic_file + " > output.txt")
+  print "Picture file:  " + pic_file
   f = open("output.txt", 'r')
   image_size = f.readline().split()[2]
   image_dim = image_size.split("x")
