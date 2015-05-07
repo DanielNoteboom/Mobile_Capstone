@@ -9,34 +9,47 @@ NUM_MATCHES = 3
 
 def compare( test, cDir ):
     if os.path.isfile(test):
-        comparisons = listdir(cDir)
+        if os.path.isdir(cDir):
+            comparisons = listdir(cDir)
 
-        matches = Queue.PriorityQueue(0)
-        for img in comparisons:
-            compOutput = Popen(["br", "-algorithm", "FaceRecognition", "-compare", test, cDir + "/" + img],
-            	stdout=PIPE, stderr=PIPE)
-            data = compOutput.communicate()
-            index = data[0].strip()
-            matches.put((-float(index), cDir + "/" + img))
+            matches = Queue.PriorityQueue(0)
+            for identity in comparisons:
+                if os.path.isdir(cDir + "/" + identity):
+                    # find openBR correlation for each image in subdirectory    
+                    cImages = listdir(cDir + "/" + identity)
+                    aggregateIndex = 0;
+                    for img in cImages:
+                        if os.path.isfile(cDir + "/" + identity + "/" + img):
+                            compOutput = Popen(["br", "-algorithm", "FaceRecognition", "-compare", 
+                                                test, cDir + "/" + identity + "/" + img],
+                                                stdout=PIPE, stderr=PIPE)
+                            data = compOutput.communicate()
+                            aggregateIndex += float(data[0].strip())
+                    matches.put((-aggregateIndex, cDir + "/" + identity))
+                comparisonFiles = listdir(cDir + "/" + identity)
+                
 
-        hits = []
-        for i in range(NUM_MATCHES):
-            try:
-                match = matches.get_nowait()
-                hits.append((match[1],-match[0]))
-            except Queue.Empty:
-            	break
-        return hits
+            hits = []
+            for i in range(NUM_MATCHES):
+                try:
+                    hit = matches.get_nowait()
+                    hits.append((hit[1], -hit[0]))
+                except Queue.Empty:
+                	break
+            return hits
 
-        #outfile = open("face_compare_info.txt", "w")
+            #outfile = open("face_compare_info.txt", "w")
 
-        #outfile.write(str(len(hits)) + "\n")
-        #for hit in hits:
-        #    index = -hit[0]
-        #    name  = hit[1]
-        #    outfile.write("%s %s\n" % (name, str(index)))
+            #outfile.write(str(len(hits)) + "\n")
+            #for hit in hits:
+            #    index = -hit[0]
+            #    name  = hit[1]
+            #    outfile.write("%s %s\n" % (name, str(index)))
+        else:
+            print "Invalid directory " + cDir;
+            return None;
     else:
-        print "Test image " + test + " not found"
+        print "Invalid test image " + test
         return None
 
 
@@ -46,6 +59,3 @@ if len(sys.argv) != NUM_MATCHES:
 else:
     matches = compare(sys.argv[1], sys.argv[2])
     print matches
-# turn into single function
-# return a array of tuples with the image name and correlation
-        
