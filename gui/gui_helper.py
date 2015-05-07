@@ -75,7 +75,7 @@ coord: coordinate looking for face
 return: tuple of files that contain top matches'''
 def facial_detection(pic_file, coord):
 
-  os.system("identify pic_file > output.txt")
+  os.system("identify " + pic_file + "  > output.txt")
   print "Picture file:  " + pic_file
   f = open("output.txt", 'r')
   image_size = f.readline().split()[2]
