@@ -52,10 +52,10 @@ def compare( test, cDir ):
         print "Invalid test image " + test
         return None
 
-
-if len(sys.argv) != NUM_MATCHES:
+if __name__ == "__main__":
+  if len(sys.argv) != NUM_MATCHES:
     print "Usage: python main.py IMAGE_PATH COMPARISON_DIRECTORY"
     sys.exit(0)
-else:
+  else:
     matches = compare(sys.argv[1], sys.argv[2])
     print matches

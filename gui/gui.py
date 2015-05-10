@@ -63,7 +63,7 @@ class Example(Frame):
 
       def capture():
         pic_file, coord = take_snapshot()
-        pic_file = os.path.absPath(pic_file)
+        pic_file = os.path.abspath(pic_file)
         matches = facial_detection(pic_file, coord)
         matchData = {}
         for match in matches:
