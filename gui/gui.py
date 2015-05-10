@@ -36,9 +36,10 @@ class Example(Frame):
       run_pupil()
 
       #  Defining a method for absolute positioning of an image
-      def place_img(self, filename, x, y):
+      def place_img(self, filename, x, y, sizeX, sizeY):
         img = Image.open(filename)
         img = ImageTk.PhotoImage(img)
+        img = img.resize((sizeY, sizeX), Image.ANTIALIAS)
         lbl1 = Label(self, image=img)
         lbl1.image = img
         lbl1.place(x=x, y=y)
@@ -68,14 +69,14 @@ class Example(Frame):
         for match in matches:
           matchData[match] = compare( match[0], "c1" )
         # window dim: 500 x 300
-        # xPos=yPos=50;
-        # for target in matchData.keys():
-        #   place_img(candidate, xPos, yPos)
-        #   shift = -25;
-        #   for targetMatch in matchData[target]:
-        #     place_img(targetMatch[0], xPos - shift, yPos)
-        #     shift += 25;
-        #   xPos += 50
+        xPos=yPos=50;
+        for target in matchData.keys():
+          place_img(candidate, xPos, yPos)
+          shift = -25;
+          for targetMatch in matchData[target]:
+            place_img(targetMatch[0], xPos - shift, yPos)
+            shift += 25;
+          xPos += 50
 
       def other():
         # external_method2()
