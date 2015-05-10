@@ -5,8 +5,12 @@ import Queue
 import os.path
 
 #controls the number of matches that the code will return
-NUM_MATCHES = 3
-`
+NUM_MATCHES = 1
+
+# returns an array with the top NUM_MATCHES comparison match
+# @params
+#   test    the image file to be identified
+#   cDir    the directory containing subdirectories of test images
 def compare( test, cDir ):
     if os.path.isfile(test):
         if os.path.isdir(cDir):
