@@ -6,6 +6,7 @@ zetcode.com/gui/tkinter/layout/
 """
 import os
 import time
+import sys
 
 from PIL import Image, ImageTk
 from Tkinter import Tk, W,E, Label, BOTH, RIGHT, RAISED
@@ -61,7 +62,7 @@ class Example(Frame):
 
       def capture():
         pic_file, coord = take_snapshot()
-        pic_file = os.path.absPath(pic_file)
+        pic_file = os.path.abspath(pic_file)
         matches = facial_detection(pic_file, coord)
         matchData = {}
         for match in matches:
