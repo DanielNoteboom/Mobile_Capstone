@@ -7,7 +7,6 @@ zetcode.com/gui/tkinter/layout/
 import os
 import time
 
-
 from PIL import Image, ImageTk
 from Tkinter import Tk, W,E, Label, BOTH, RIGHT, RAISED
 from ttk import Frame, Style, Button
@@ -67,7 +66,15 @@ class Example(Frame):
         matchData = {}
         for match in matches:
           matchData[match] = compare( match[0], "c1" )
-          print matchData
+        # window dim: 500 x 300
+        # xPos=yPos=50;
+        # for target in matchData.keys():
+        #   place_img(candidate, xPos, yPos)
+        #   shift = -25;
+        #   for targetMatch in matchData[target]:
+        #     place_img(targetMatch[0], xPos - shift, yPos)
+        #     shift += 25;
+        #   xPos += 50
 
       def other():
         # external_method2()
