@@ -5,8 +5,12 @@ import Queue
 import os.path
 
 #controls the number of matches that the code will return
-NUM_MATCHES = 3
+NUM_MATCHES = 1
 
+# returns an array with the top NUM_MATCHES comparison match
+# @params
+#   test    the image file to be identified
+#   cDir    the directory containing subdirectories of test images
 def compare( test, cDir ):
     if os.path.isfile(test):
         if os.path.isdir(cDir):
@@ -25,7 +29,7 @@ def compare( test, cDir ):
                                                 stdout=PIPE, stderr=PIPE)
                             data = compOutput.communicate()
                             aggregateIndex += float(data[0].strip())
-                    matches.put((-aggregateIndex, cDir + "/" + identity))
+                    matches.put((-aggregateIndex, os.path.abspath(cDir + "/" + identity)))
                 comparisonFiles = listdir(cDir + "/" + identity)
                 
 
@@ -52,10 +56,10 @@ def compare( test, cDir ):
         print "Invalid test image " + test
         return None
 
-
-if len(sys.argv) != NUM_MATCHES:
+if __name__ == "__main__":
+  if len(sys.argv) != NUM_MATCHES:
     print "Usage: python main.py IMAGE_PATH COMPARISON_DIRECTORY"
     sys.exit(0)
-else:
+  else:
     matches = compare(sys.argv[1], sys.argv[2])
     print matches

@@ -7,6 +7,7 @@ zetcode.com/gui/tkinter/layout/
 import os
 import time
 
+import sys
 
 from PIL import Image, ImageTk
 from Tkinter import Tk, N,S,W,E, Label, BOTH, RIGHT, RAISED, LEFT
@@ -16,7 +17,8 @@ from ttk import Entry
 
 from gui_helper import take_snapshot, run_pupil, facial_detection
 
-
+sys.path.insert(0, '..')
+from face_comparison.compare import compare
 
 class Example(Frame):
   
@@ -36,8 +38,9 @@ class Example(Frame):
       #run_pupil()
 
       #  Defining a method for absolute positioning of an image
-      def place_img(self, filename, x, y):
+      def place_img(self, filename, x, y, sizeX, sizeY):
         img = Image.open(filename)
+        img = img.resize((sizeY, sizeX), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
         lbl1 = Label(self, image=img)
         lbl1.image = img
@@ -62,7 +65,26 @@ class Example(Frame):
 
       def capture():
         pic_file, coord = take_snapshot()
-        facial_detection(pic_file, coord)
+        pic_file = os.path.abspath(pic_file)
+        im=Image.open(pic_file)
+        im.size # (width,height) tuple
+        coord[1] = int(float(coord[1]) * im.size[0])
+        coord[3] = int(float(coord[3]) * im.size[1])
+        print coord
+        os.system("cp " + pic_file + " a.jpg")
+        matches = facial_detection(pic_file, coord[1], coord[3])
+        matchData = {}
+        for match in matches:
+          matchData[match] = compare( match[0], "../face_comparison/c1" )
+        # window dim: 500 x 300
+        xPos=yPos=50;
+        for target in matchData.keys():
+          place_img(candidate, xPos, yPos)
+          shift = -25;
+          for targetMatch in matchData[target]:
+            place_img(targetMatch[0], xPos - shift, yPos)
+            shift += 25;
+          xPos += 50
 
       def other():
         # external_method2()
