@@ -8,7 +8,6 @@ import os
 import time
 
 
-
 from PIL import Image, ImageTk
 from Tkinter import Tk, W,E, Label, BOTH, RIGHT, RAISED
 from ttk import Frame, Style, Button
@@ -16,7 +15,8 @@ from ttk import Entry
 
 from gui_helper import take_snapshot, run_pupil, facial_detection
 
-
+sys.path.insert(0, '..')
+from face_comparison.compare import compare
 
 class Example(Frame):
   
@@ -68,7 +68,12 @@ class Example(Frame):
 
       def capture():
         pic_file, coord = take_snapshot()
-        facial_detection(pic_file, coord)
+        pic_file = os.path.absPath(pic_file)
+        matches = facial_detection(pic_file, coord)
+        matchData = {}
+        for match in matches:
+          matchData[match] = compare( match[0], "c1" )
+          print matchData
 
 
       def other():

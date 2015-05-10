@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import sys
 import math
+import os
 import Queue
 
 
@@ -62,7 +63,7 @@ def write_matches(matches, result_list)
     crop_img = img[y:(y+h),x:(x+w)]
     cv2.imwrite("crop%d.jpg"%i, crop_img)
     # Distance might taken into account later
-    result.append(("crop%d.jpg"%i, dist))
+    result.append((os.path.abspath("crop%d.jpg"%i), dist))
 
 
 
