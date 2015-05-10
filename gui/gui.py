@@ -35,6 +35,13 @@ class Example(Frame):
     def initUI(self):
       run_pupil()
 
+      #  Defining a method for absolute positioning of an image
+      def place_img(self, filename, x, y):
+        img = Image.open(filename)
+        img = ImageTk.PhotoImage(img)
+        lbl1 = Label(self, image=img)
+        lbl1.image = img
+        lbl1.place(x=x, y=y)
 
       self.parent.title("Student Name Recollection Helper")
       #self.pack(fill=BOTH, expand=1)
@@ -67,8 +74,8 @@ class Example(Frame):
         print "Not implemented"
 
 
-      b2 = Label(self, text="Loading...", background="#eee")
-      b2.grid(row=0,column=0, columnspan=2)
+      load = Label(self, text="Loading...", background="#eee")
+      load.grid(row=0,column=0, columnspan=2)
 
       b2 = Button(self, text="Focus camera", command=other)
       b2.grid(row=1,column=0)

@@ -47,10 +47,11 @@ def queue_to_list(q, list_size):
   matches = []
   for i in range(NUM_MATCHES):
     try:
-      match = best_matches.get_nowait()
+      match = q.get_nowait()
       matches.append(match)
     except Queue.Empty:
       break
+  return matches
 
 
 # Takes a list of matches, saves image files for them,
@@ -58,6 +59,7 @@ def queue_to_list(q, list_size):
 #  to a result list
 def write_matches(matches, result_list):
   for i in range(len(matches)):
+    print match
     dist = matches[i][0]
     x,y,w,h = matches[i][1]
     crop_img = img[y:(y+h),x:(x+w)]
