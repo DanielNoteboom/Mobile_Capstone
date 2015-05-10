@@ -64,7 +64,13 @@ class Example(Frame):
       def capture():
         pic_file, coord = take_snapshot()
         pic_file = os.path.abspath(pic_file)
-        matches = facial_detection(pic_file, coord)
+        im=Image.open(pic_file)
+        im.size # (width,height) tuple
+        coord[1] = int(float(coord[1]) * im.size[0])
+        coord[3] = int(float(coord[3]) * im.size[1])
+        print coord
+        os.system("cp " + pic_file + " a.jpg")
+        matches = facial_detection(pic_file, coord[1], coord[3])
         matchData = {}
         for match in matches:
           matchData[match] = compare( match[0], "c1" )

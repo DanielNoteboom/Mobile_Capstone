@@ -6,7 +6,7 @@ import os.path
 
 #controls the number of matches that the code will return
 NUM_MATCHES = 3
-
+`
 def compare( test, cDir ):
     if os.path.isfile(test):
         if os.path.isdir(cDir):
