@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import sys
 import math
+import os
 import Queue
 
 NUM_MATCHES = 3
@@ -69,7 +70,7 @@ def write_matches(matches, result_list, img, cv2):
     crop_img = img[y:(y+h),x:(x+w)]
     cv2.imwrite("crop%d.jpg"%i, crop_img)
     # Distance might taken into account later
-    result_list.append(("crop%d.jpg"%i, dist))
+    result.append((os.path.abspath("crop%d.jpg"%i), dist))
   if len(matches) == 0:
     print "no matches found"
 

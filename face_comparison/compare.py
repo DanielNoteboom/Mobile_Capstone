@@ -25,7 +25,7 @@ def compare( test, cDir ):
                                                 stdout=PIPE, stderr=PIPE)
                             data = compOutput.communicate()
                             aggregateIndex += float(data[0].strip())
-                    matches.put((-aggregateIndex, cDir + "/" + identity))
+                    matches.put((-aggregateIndex, os.path.abspath(cDir + "/" + identity)))
                 comparisonFiles = listdir(cDir + "/" + identity)
                 
 
