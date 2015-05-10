@@ -38,8 +38,8 @@ class Example(Frame):
       #  Defining a method for absolute positioning of an image
       def place_img(self, filename, x, y, sizeX, sizeY):
         img = Image.open(filename)
-        img = ImageTk.PhotoImage(img)
         img = img.resize((sizeY, sizeX), Image.ANTIALIAS)
+        img = ImageTk.PhotoImage(img)
         lbl1 = Label(self, image=img)
         lbl1.image = img
         lbl1.place(x=x, y=y)
