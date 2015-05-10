@@ -36,13 +36,24 @@ class Example(Frame):
       run_pupil()
 
       #  Defining a method for absolute positioning of an image
-      def place_img(self, filename, x, y, sizeX, sizeY):
+      def place_img(self, filename, x, y):
         img = Image.open(filename)
-        img = img.resize((sizeY, sizeX), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
         lbl1 = Label(self, image=img)
         lbl1.image = img
         lbl1.place(x=x, y=y)
+
+      #  Defining a method for framewise positioning of an image
+      # @params
+      #   frame   the frame to attach filename to
+      def insert_img(self, filename, frame):
+        sizeY = frame.winfo_height()
+        sizeX = frame.winfo_width()
+        img = Image.open(filename)
+        img = img.resize((sizeY, sizeX), Image.ANTIALIAS)
+        img = ImageTk.PhotoImage(img)
+        lbl1 = Label(frame, image=img)
+        lbl1.image = img
 
       self.parent.title("Student Name Recollection Helper")
       #self.pack(fill=BOTH, expand=1)
