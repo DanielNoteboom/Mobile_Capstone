@@ -22,9 +22,7 @@ class Example(Frame):
   
     def __init__(self, parent):
         Frame.__init__(self, parent)   
-         
         self.parent = parent
-        
         self.initUI()
 
     def callback():
@@ -33,13 +31,6 @@ class Example(Frame):
     def capture_message(self):
       self.create_text(self.winfo_width()/2, self.winfo_height()/2, 
                       text="GAZE CAPTURED", fill="white")
-
-    def launch_pupil():
-      newpid = os.fork()
-      if newpid ==0:
-        os.execv("../pupil/run_capture", ['foo'])
-      else:
-        print "Loading... please wait"  
 
     def initUI(self):
       run_pupil()
@@ -52,17 +43,13 @@ class Example(Frame):
       style.configure("TButton", padding=(0, 5, 0, 5), 
                       font='serif 10')
       style.configure("TFrame", background="#333")        
+      #style.configure("TLabel", background="#333")        
 
       self.columnconfigure(0,pad=10, minsize=300, weight=1)
       self.columnconfigure(1,pad=10)
-      #self.columnconfigure(2,pad=10)
-      #self.columnconfigure(3,pad=10)
 
       self.rowconfigure(0,pad=10, minsize=500, weight=1)
       self.rowconfigure(1,pad=10, weight=1)
-      #self.rowconfigure(2,pad=3)
-      #self.rowconfigure(3,pad=3)
-      #self.rowconfigure(4,pad=3)
 
       self.pack()
 
@@ -75,41 +62,27 @@ class Example(Frame):
           matchData[match] = compare( match[0], "c1" )
           print matchData
 
-
       def other():
-        external_method2()
-
-      #frame = Frame(self, relief=RAISED, borderwidth=20)
-      #frame.grid(row=0, column=0)
-
-      
-      b2 = Button(self, text="Loading", command=other)
-      b2.grid(row=0,column=0)
-      #frame.pack()
-
-      #f2 = Frame(frame, relief=RAISED, borderwidth=10)
-      #f2.pack(fill=BOTH, expand=1)
-      ##f3 = Frame(frame, relief=RAISED, borderwidth=10)
-      #f3.pack(fill=BOTH, expand=1)
-
-      #cls = Button(f2, text="Cls")
-      ##cls.pack(fill=BOTH, expand=1)
-      #bck = Button(f3, text="Back")
-      ##bck.grid(fill=BOTH, expand=1)
+        # external_method2()
+        print "Not implemented"
 
 
+      b2 = Label(self, text="Loading...", background="#eee")
+      b2.grid(row=0,column=0, columnspan=2)
 
-      #cb.pack(side=RIGHT, padx=5,pady=5)
       b2 = Button(self, text="Focus camera", command=other)
       b2.grid(row=1,column=0)
       cb = Button(self, text="Capture Gaze", command=capture)
       cb.grid(row=1,column=1)
-      #b2.pack(side=RIGHT, padx=5,pady=5)
-            
+
+
+      # some kind of hack to bring this window to the front as it is launched. Probably
+      #  doesn't work on windows.
+      if os.name == "posix":
+        os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
 def main():
     root = Tk()
-    #root.geometry("500x500+200+200")
     app = Example(root)
     root.mainloop()  
 

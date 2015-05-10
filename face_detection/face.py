@@ -5,10 +5,10 @@ import math
 import os
 import Queue
 
+NUM_MATCHES = 3
 
 def get_top_matches(picture, x_coord, y_coord):
   # controls the number of matches that the code returns
-  NUM_MATCHES = 3
   
   def find_distance(x1,y1,x2,y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
@@ -42,7 +42,7 @@ def get_top_matches(picture, x_coord, y_coord):
   
       
 ## changes priority queue to a list
-def queue_to_list(q, list_size)
+def queue_to_list(q, list_size):
   # get a list of matches out of the queue
   matches = []
   for i in range(NUM_MATCHES):
@@ -56,7 +56,7 @@ def queue_to_list(q, list_size)
 # Takes a list of matches, saves image files for them,
 #  appends the image file name and the associated distance
 #  to a result list
-def write_matches(matches, result_list)
+def write_matches(matches, result_list):
   for i in range(len(matches)):
     dist = matches[i][0]
     x,y,w,h = matches[i][1]
