@@ -70,7 +70,7 @@ def write_matches(matches, result_list, img, cv2):
     crop_img = img[y:(y+h),x:(x+w)]
     cv2.imwrite("crop%d.jpg"%i, crop_img)
     # Distance might taken into account later
-    result.append((os.path.abspath("crop%d.jpg"%i), dist))
+    result_list.append((os.path.abspath("crop%d.jpg"%i), dist))
   if len(matches) == 0:
     print "no matches found"
 
