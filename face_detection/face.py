@@ -35,7 +35,7 @@ def get_top_matches(picture, x_coord, y_coord):
   
   #find best_matches
   for (x,y,w,h) in faces:
-    cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+    #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
   
     # compare to center of rectangle
     distance = find_distance(x_coord,y_coord,x+w/2.0,y+h/2.0)
