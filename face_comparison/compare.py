@@ -24,28 +24,33 @@ def compare( test, cDir ):
   comparisons = listdir(cDir)
 
   matches = Queue.PriorityQueue(0)
-  for identity in comparisons:
-    if os.path.isdir(cDir + "/" + identity):
-      # find openBR correlation for each image in subdirectory    
-      cImages = listdir(cDir + "/" + identity)
-      aggregateIndex = 0
-      #for img in cImages:
-      #if os.path.isfile(cDir + "/" + identity): # + "/" + img
-      compOutput = Popen(["br", "-algorithm", "FaceRecognition", "-compare", 
-                          test, cDir + "/" + identity], # + "/" + img
-                          stdout=PIPE, stderr=PIPE)
-      data = compOutput.communicate()
-      dataArray = str(data[0]).split()
-      source = str(data[1]).split()[9].split("/")[1]
-      for i in range(len(dataArray)):
-        if i % 2 == 0 and i != 0:
-          aggregateIndex += float(dataArray[i].strip())
-      # negative sign is appended because the Queue is a min-queue, but
-      # want to sort by highest aggregateIndex.
-      matches.put((-aggregateIndex, os.path.abspath(cDir + "/" + identity)))
-    # comparisonFiles = listdir(cDir + "/" + identity)
-      
-  #  
+  cImages = listdir(cDir)
+  aggregateIndex = 0
+  compOutput = Popen(["br", "-algorithm", "FaceRecognition", "-compare", 
+                      test, cDir], stdout=PIPE, stderr=PIPE)
+  data = compOutput.communicate()
+  dataArray = str(data[0]).split()
+  for i in range(len(dataArray)):
+    if i % 2 == 0 and i != 0:
+      print "[" + str(i) + "]:" + str(dataArray[i])
+
+  # for identity in comparisons:
+  #   if os.path.isdir(cDir + "/" + identity):
+  #     # find openBR correlation for each image in subdirectory    
+  #     cImages = listdir(cDir + "/" + identity)
+  #     aggregateIndex = 0
+  #     compOutput = Popen(["br", "-algorithm", "FaceRecognition", "-compare", 
+  #                         test, cDir + "/" + identity],
+  #                         stdout=PIPE, stderr=PIPE)
+  #     data = compOutput.communicate()
+  #     dataArray = str(data[0]).split()
+  #     source = str(data[1]).split()[9].split("/")[1]
+  #     for i in range(len(dataArray)):
+  #       if i % 2 == 0 and i != 0:
+  #         aggregateIndex += float(dataArray[i].strip())
+  #     # (-) appended b/c min-queue, need max aggregateIndex.
+  #     matches.put((-aggregateIndex, os.path.abspath(cDir + "/" + identity)))
+
   hits = []
   for i in range(NUM_MATCHES):
       try:
@@ -69,4 +74,4 @@ if __name__ == "__main__":
     sys.exit(0)
   else:
     matches = compare(sys.argv[1], sys.argv[2])
-    print matches
+    #print matches
