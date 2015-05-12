@@ -73,8 +73,8 @@ class Example(Frame):
         pic_file = os.path.abspath(pic_file)
         im=Image.open(pic_file)
         im.size # (width,height) tuple
-        coord[1] = int(float(coord[1]) * im.size[0])
-        coord[3] = int(float(coord[3]) * im.size[1])
+        coord[0] = int(float(coord[0]) * im.size[0])
+        coord[0] = int(float(coord[1]) * im.size[1])
         print coord
         os.system("cp " + pic_file + " a.jpg")
         matches = facial_detection(pic_file, coord[1], coord[3])
