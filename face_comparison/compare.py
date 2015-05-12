@@ -20,19 +20,31 @@ def compare( test, cDir ):
   if not os.path.isdir(cDir):
     print "Invalid directory " + cDir
     return None
-
-  comparisons = listdir(cDir)
-
-  matches = Queue.PriorityQueue(0)
-  cImages = listdir(cDir)
-  aggregateIndex = 0
+  
   compOutput = Popen(["br", "-algorithm", "FaceRecognition", "-compare", 
                       test, cDir], stdout=PIPE, stderr=PIPE)
   data = compOutput.communicate()
   dataArray = str(data[0]).split()
+  
+  counter = 0
+  scores = {}
   for i in range(len(dataArray)):
     if i % 2 == 0 and i != 0:
-      print "[" + str(i) + "]:" + str(dataArray[i])
+      scores[counter] = float(dataArray[i])
+      counter += 1
+
+
+  comparisons = listdir(cDir)
+
+  matches = Queue.PriorityQueue(0)
+  idCtr = 0
+  for identity in comparisons:
+    aggregateIndex = 0
+    if os.path.isdir(cDir + "/" + identity):
+      for i in range(len(listdir(cDir + "/" + identity))):
+        aggregateIndex += scores[idCtr]
+        idCtr += 1
+      matches.put((-aggregateIndex, os.path.abspath(cDir + "/" + identity)))
 
   # for identity in comparisons:
   #   if os.path.isdir(cDir + "/" + identity):
@@ -74,4 +86,4 @@ if __name__ == "__main__":
     sys.exit(0)
   else:
     matches = compare(sys.argv[1], sys.argv[2])
-    #print matches
+    print matches
