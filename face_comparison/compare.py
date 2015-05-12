@@ -46,7 +46,7 @@ def compare( test, cDir ):
   for i in range(NUM_MATCHES):
       try:
           hit = matches.get_nowait()
-          hits.append((hit[1] + "/1.jpg", -hit[0]))
+          hits.append((hit[1] + "/1.jpg", hit[1].split("/")[-1:], -hit[0]))
       except Queue.Empty:
       	break
   return hits

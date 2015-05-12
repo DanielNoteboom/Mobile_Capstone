@@ -28,14 +28,14 @@ def get_top_matches(picture, x_coord, y_coord):
   img = cv2.imread(picture)
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   gray = cv2.equalizeHist(gray)
-  faces = face_cascade.detectMultiScale(gray, 1.1, 0)
+  faces = face_cascade.detectMultiScale(gray, 1.1, 2)
   
   #Create priority queue with no max size
   best_matches = Queue.PriorityQueue(0)
   
   #find best_matches
   for (x,y,w,h) in faces:
-    cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+    #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
   
     # compare to center of rectangle
     distance = find_distance(x_coord,y_coord,x+w/2.0,y+h/2.0)
