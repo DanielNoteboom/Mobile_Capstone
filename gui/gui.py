@@ -68,7 +68,6 @@ class Example(Frame):
 
       self.pack()
 
-<<<<<<< HEAD
       def capture():
         pic_file, coord = take_snapshot()
         pic_file = os.path.abspath(pic_file)
@@ -94,8 +93,6 @@ class Example(Frame):
             shift += 25;
           xPos += 50
 
-=======
->>>>>>> 9109f35dbcfee5f2c52b1afb4ba9d0c2dc708e2d
       def other():
         # external_method2()
         print "Not implemented"
