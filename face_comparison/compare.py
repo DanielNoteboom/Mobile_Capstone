@@ -21,11 +21,12 @@ def compare( test, cDir ):
     print "Invalid directory " + cDir
     return None
   
+  # OpenBR recursively compares across all images in subdirectories
   compOutput = Popen(["br", "-algorithm", "FaceRecognition", "-compare", 
                       test, cDir], stdout=PIPE, stderr=PIPE)
   data = compOutput.communicate()
+  # data is contained in fist index of output
   dataArray = str(data[0]).split()
-  
   counter = 0
   scores = {}
   for i in range(len(dataArray)):
@@ -33,14 +34,14 @@ def compare( test, cDir ):
       scores[counter] = float(dataArray[i])
       counter += 1
 
-
-  comparisons = listdir(cDir)
-
   matches = Queue.PriorityQueue(0)
   idCtr = 0
+  comparisons = listdir(cDir)
+  # only works because both OpenBR and python recurse thru dirs alphanumerically
   for identity in comparisons:
     aggregateIndex = 0
     if os.path.isdir(cDir + "/" + identity):
+      # aggregate all scores for a given id
       for i in range(len(listdir(cDir + "/" + identity))):
         aggregateIndex += scores[idCtr]
         idCtr += 1
@@ -63,6 +64,7 @@ def compare( test, cDir ):
   #     # (-) appended b/c min-queue, need max aggregateIndex.
   #     matches.put((-aggregateIndex, os.path.abspath(cDir + "/" + identity)))
 
+  # need to make this a dictionary
   hits = []
   for i in range(NUM_MATCHES):
       try:
@@ -71,14 +73,6 @@ def compare( test, cDir ):
       except Queue.Empty:
       	break
   return hits
-
-  #outfile = open("face_compare_info.txt", "w")
-
-  #outfile.write(str(len(hits)) + "\n")
-  #for hit in hits:
-  #    index = -hit[0]
-  #    name  = hit[1]
-  #    outfile.write("%s %s\n" % (name, str(index)))
 
 if __name__ == "__main__":
   if len(sys.argv) != 3:
