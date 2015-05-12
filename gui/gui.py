@@ -112,11 +112,6 @@ class Example(Frame):
       panel_data.append( make_panel(upper_frame) )
       panel_data.append( make_panel(upper_frame) )
 
-      #panel_data is now a list of 3 "panel" objects
-
-      #(p1_1, p1_2, lab1 = make_panel(upper_frame)
-      #(p2_1, p2_2, lab2) = make_panel(upper_frame)
-      #(p3_1, p3_2, lab3) = make_panel(upper_frame)
 
       def capture():
         if not test_mode:
@@ -135,17 +130,17 @@ class Example(Frame):
         coord[1] = int(float(coord[1]) * im.size[1])
         os.system("cp " + pic_file + " a.jpg")
         faces = facial_detection(pic_file, coord[0], coord[1])
-        faceData = {}
+        associated_matches = {}
         for face in faces:
-          faceData[face] = compare( face[0], "../face_comparison/c1" )
+          associated_matches[face['path']] = compare( face['path'], "../face_comparison/c1" )
 
         for index, face in enumerate(faces):
-          face_info = faceData[face]
-          best_match = face_info[0]
+          face_matches = associated_matches[face['path']]
+          best_match = face_matches[0]
           panel = panel_data[index]
           panel['right_label']['text'] = best_match[1]
           insert_img(self, best_match[0], panel['right_pic'])
-          insert_img(self, face[0], panel['left_pic'])
+          insert_img(self, face['path'], panel['left_pic'])
 
     
 

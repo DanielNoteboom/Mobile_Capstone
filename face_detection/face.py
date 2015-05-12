@@ -14,8 +14,6 @@ params:
   y_coord-y coordinate of where we are looking for faces
 '''
 def get_top_matches(picture, x_coord, y_coord):
-  print "I'm in function"
-  print picture
   # controls the number of matches that the code returns
   
   def find_distance(x1,y1,x2,y2):
@@ -23,7 +21,6 @@ def get_top_matches(picture, x_coord, y_coord):
   
   # coordinates of the image here are from the upper left, with 
   face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt2.xml')
-  print face_cascade
   
   img = cv2.imread(picture)
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -74,7 +71,9 @@ def write_matches(matches, result_list, img, cv2):
     crop_img = img[y:(y+h),x:(x+w)]
     cv2.imwrite("crop%d.jpg"%i, crop_img)
     # Distance might taken into account later
-    result_list.append((os.path.abspath("crop%d.jpg"%i), dist))
+    # Faces are returned as a dictionary
+    result_list.append({'path':os.path.abspath("crop%d.jpg"%i),
+                        'distance':dist})
   if len(matches) == 0:
     print "no matches found"
 
