@@ -20,6 +20,8 @@ from gui_helper import take_snapshot, run_pupil, facial_detection
 sys.path.insert(0, '..')
 from face_comparison.compare import compare
 
+test_mode = False
+
 class Example(Frame):
   
     def __init__(self, parent):
@@ -28,7 +30,9 @@ class Example(Frame):
         self.initUI()
 
     def initUI(self):
-      run_pupil()
+      #global test_mode
+      if not test_mode:
+        run_pupil()
 
       #  Defining a method for absolute positioning of an image
       def place_img(self, filename, x, y):
@@ -110,16 +114,22 @@ class Example(Frame):
 
       #  TODO -- replace my fake capture method with this one
       def capture():
-        pic_file, coord = take_snapshot()
-        pic_file = os.path.abspath(pic_file)
+        if not test_mode:
+          pic_file, coord = take_snapshot()
+          pic_file = os.path.abspath(pic_file)
+        else:
+          pic_file = sys.argv[1]
+          coord = [0.5,0.5]
+
         im=Image.open(pic_file)
         im.size # (width,height) tuple
-        coord[1] = int(float(coord[1]) * im.size[0])
-        coord[3] = int(float(coord[3]) * im.size[1])
+        coord[0] = int(float(coord[0]) * im.size[0])
+        coord[1] = int(float(coord[1]) * im.size[1])
         print coord
         os.system("cp " + pic_file + " a.jpg")
-        faces = facial_detection(pic_file, coord[1], coord[3])
+        faces = facial_detection(pic_file, coord[0], coord[1])
         faceData = {}
+        print "num_faces: " + str(len(faces))
         for face in faces:
           faceData[face] = compare( face[0], "../face_comparison/c1" )
 
@@ -130,23 +140,37 @@ class Example(Frame):
         f2 = faces[1]
         f3 = faces[2]
 
+        if len(faces) > 0:
+          f1 = faces[0]
+          print faceData[f1]
+          tup1 = faceData[f1][0]
+          lab1['text'] = tup1[1]
+          insert_img(self, f1[0], p1_1)
+          insert_img(self, tup1[0], p1_2)
+        else:
+          lab1['text'] = "No more faces found"
+
+        if len(faces) > 1:
+          f2 = faces[1]
+          print faceData[f2]
+          tup2 = faceData[f2][0]
+          lab2['text'] = tup2[1]
+          insert_img(self, f2[0], p2_1)
+          insert_img(self, tup1[0], p2_2)
+        else:
+          lab2['text'] = "No more faces found"
+
+        if len(faces) > 2:
+          f3 = faces[2]
+          print faceData[f3]
+          tup3 = faceData[f3][0]
+          lab3['text'] = tup3[1]
+          insert_img(self, f3[0], p3_1)
+          insert_img(self, tup3[0], p3_2)
+        else:
+          lab3['text'] = "No more faces found"
         #   Best matches for the faces detected 
         #     (Each of these are actually tuples with the filename and score)
-        b1 = faceData[f1][0]
-        b2 = faceData[f2][0]
-        b3 = faceData[f3][0]
-
-        lab1.text = faceData[f1][1]
-        lab2.text = faceData[f2][1]
-        lab3.text = faceData[f3][1]
-
-        # Insert matches in proper places (First element of tuple is filename)
-        insert_img(self, f1[0], p1_1)
-        insert_img(self, b1[0], p1_2)
-        insert_img(self, f2[0],p2_1)
-        insert_img(self, b2[0],p2_2)
-        insert_img(self, f3[0],p3_1)
-        insert_img(self, b3[0],p3_2)
 
       b2 = Button(self, text="Focus camera", command=other)
       b2.grid(row=1,column=0)
@@ -160,10 +184,12 @@ class Example(Frame):
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
 def main():
-    root = Tk()
-    app = Example(root)
-    root.mainloop()  
+  root = Tk()
+  app = Example(root)
+  root.mainloop()  
 
 if __name__ == '__main__':
-    main()  
+  if len(sys.argv) > 1:
+    test_mode = True
+  main()  
 

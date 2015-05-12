@@ -42,6 +42,7 @@ def take_snapshot():
   coord = f.readline().split()
   
   coord = find_coordinates(coord, pic_num)
+  coord = [coord[1], coord[3]]
   
   return (pic_file, coord)
 
