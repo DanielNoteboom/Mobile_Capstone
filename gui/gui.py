@@ -28,7 +28,7 @@ class Example(Frame):
         self.initUI()
 
     def initUI(self):
-      #run_pupil()
+      run_pupil()
 
       #  Defining a method for absolute positioning of an image
       def place_img(self, filename, x, y):
@@ -68,31 +68,6 @@ class Example(Frame):
 
       self.pack()
 
-      def capture():
-        pic_file, coord = take_snapshot()
-        pic_file = os.path.abspath(pic_file)
-        im=Image.open(pic_file)
-        im.size # (width,height) tuple
-        coord[1] = int(float(coord[1]) * im.size[0])
-        coord[3] = int(float(coord[3]) * im.size[1])
-        print coord
-        os.system("cp " + pic_file + " a.jpg")
-        matches = facial_detection(pic_file, coord[1], coord[3])
-        matchData = {}
-        print "matches"
-        print matches
-        for match in matches:
-          matchData[match] = compare( match[0], "../face_comparison/c1" )
-        # window dim: 500 x 300
-        xPos=yPos=50;
-        for target in matchData.keys():
-          place_img(candidate, xPos, yPos)
-          shift = -25;
-          for targetMatch in matchData[target]:
-            place_img(targetMatch[0], xPos - shift, yPos)
-            shift += 25;
-          xPos += 50
-
       def other():
         # external_method2()
         print "Not implemented"
@@ -125,46 +100,53 @@ class Example(Frame):
         side_panel1 = Frame(p1, relief=RAISED, borderwidth =1)
         side_panel1.pack(side = RIGHT, fill = BOTH, expand=1)
 
-        return [pic1, pic2]
+        return [pic1, pic2, label2]
 
       #  make 3 panels
 
-      (p1_1, p1_2) = make_panel(upper_frame)
-      (p2_1, p2_2) = make_panel(upper_frame)
-      (p3_1, p3_2) = make_panel(upper_frame)
+      (p1_1, p1_2, lab1) = make_panel(upper_frame)
+      (p2_1, p2_2, lab2) = make_panel(upper_frame)
+      (p3_1, p3_2, lab3) = make_panel(upper_frame)
 
       #  TODO -- replace my fake capture method with this one
-      #def capture():
-      #  pic_file, coord = take_snapshot()
-      #  pic_file = os.path.abspath(pic_file)
-      #  im=Image.open(pic_file)
-      #  im.size # (width,height) tuple
-      #  coord[1] = int(float(coord[1]) * im.size[0])
-      #  coord[3] = int(float(coord[3]) * im.size[1])
-      #  print coord
-      #  os.system("cp " + pic_file + " a.jpg")
-      #  matches = facial_detection(pic_file, coord[1], coord[3])
-      #  matchData = {}
-      #  for match in matches:
-      #    matchData[match] = compare( match[0], "../face_comparison/c1" )
-      #  # window dim: 500 x 300
-      #  xPos=yPos=50;
-      #  for target in matchData.keys():
-      #    place_img(candidate, xPos, yPos)
-      #    shift = -25;
-      #    for targetMatch in matchData[target]:
-      #      place_img(targetMatch[0], xPos - shift, yPos)
-      #      shift += 25;
-      #    xPos += 50
-
       def capture():
-        insert_img(self, "img1.jpg",p1_1)
-        insert_img(self, "img2.jpg",p2_1)
-        insert_img(self, "img3.jpg",p3_1)
-        insert_img(self, "img1.jpg",p2_2)
-        insert_img(self, "img2.jpg",p3_2)
-        insert_img(self, "img3.jpg",p1_2)
-        
+        pic_file, coord = take_snapshot()
+        pic_file = os.path.abspath(pic_file)
+        im=Image.open(pic_file)
+        im.size # (width,height) tuple
+        coord[1] = int(float(coord[1]) * im.size[0])
+        coord[3] = int(float(coord[3]) * im.size[1])
+        print coord
+        os.system("cp " + pic_file + " a.jpg")
+        faces = facial_detection(pic_file, coord[1], coord[3])
+        faceData = {}
+        for face in faces:
+          faceData[face] = compare( face[0], "../face_comparison/c1" )
+
+        # For now, I am relying on three matches returned from facial_detection,
+        #   and one from the compare function, but this code should
+        #   be rewritten with loops to avoid assuming a certain number of matches.
+        f1 = faces[0]
+        f2 = faces[1]
+        f3 = faces[2]
+
+        #   Best matches for the faces detected 
+        #     (Each of these are actually tuples with the filename and score)
+        b1 = faceData[f1][0]
+        b2 = faceData[f2][0]
+        b3 = faceData[f3][0]
+
+        lab1.text = faceData[f1][1]
+        lab2.text = faceData[f2][1]
+        lab3.text = faceData[f3][1]
+
+        # Insert matches in proper places (First element of tuple is filename)
+        insert_img(self, f1[0], p1_1)
+        insert_img(self, b1[0], p1_2)
+        insert_img(self, f2[0],p2_1)
+        insert_img(self, b2[0],p2_2)
+        insert_img(self, f3[0],p3_1)
+        insert_img(self, b3[0],p3_2)
 
       b2 = Button(self, text="Focus camera", command=other)
       b2.grid(row=1,column=0)
@@ -172,7 +154,7 @@ class Example(Frame):
       cb.grid(row=1,column=1)
 
 
-      # Some kind of hack to bring this window to the front as it is launched. 
+      # Some weird hack to bring this window to the front as it is launched. 
       #  Won't work on windows.
       if os.name == "posix":
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')

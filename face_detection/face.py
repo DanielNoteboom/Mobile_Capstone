@@ -47,6 +47,7 @@ def get_top_matches(picture, x_coord, y_coord):
   
   result = []
   write_matches(matches, result, img, cv2)
+  print result
   return result
   
       
