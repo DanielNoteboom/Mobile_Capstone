@@ -1,0 +1,1 @@
+Note. We copied the haar_cascades files in this directory, because python needs the files in the current directory that the code is running in and not the original main file. We realize this is bad style to have duplicated files, and hopefully will come up with a fix soon.
