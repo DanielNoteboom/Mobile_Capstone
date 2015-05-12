@@ -72,6 +72,8 @@ class Example(Frame):
         os.system("cp " + pic_file + " a.jpg")
         matches = facial_detection(pic_file, coord[1], coord[3])
         matchData = {}
+        print "matches"
+        print matches
         for match in matches:
           matchData[match] = compare( match[0], "../face_comparison/c1" )
         # window dim: 500 x 300
