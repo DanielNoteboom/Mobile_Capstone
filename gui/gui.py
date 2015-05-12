@@ -104,73 +104,50 @@ class Example(Frame):
         side_panel1 = Frame(p1, relief=RAISED, borderwidth =1)
         side_panel1.pack(side = RIGHT, fill = BOTH, expand=1)
 
-        return [pic1, pic2, label2]
+        return {"left_pic":pic1, "right_pic":pic2, "right_label":label2}
 
       #  make 3 panels
+      panel_data = []
+      panel_data.append( make_panel(upper_frame) )
+      panel_data.append( make_panel(upper_frame) )
+      panel_data.append( make_panel(upper_frame) )
 
-      (p1_1, p1_2, lab1) = make_panel(upper_frame)
-      (p2_1, p2_2, lab2) = make_panel(upper_frame)
-      (p3_1, p3_2, lab3) = make_panel(upper_frame)
+      #panel_data is now a list of 3 "panel" objects
 
-      #  TODO -- replace my fake capture method with this one
+      #(p1_1, p1_2, lab1 = make_panel(upper_frame)
+      #(p2_1, p2_2, lab2) = make_panel(upper_frame)
+      #(p3_1, p3_2, lab3) = make_panel(upper_frame)
+
       def capture():
         if not test_mode:
           pic_file, coord = take_snapshot()
           pic_file = os.path.abspath(pic_file)
         else:
           pic_file = sys.argv[1]
-          coord = [0.5,0.5]
+          if len(sys.argv) >= 4:
+            coord = [float(sys.argv[2]), float(sys.argv[3])]
+          else:
+            coord = [0.5,0.5]
 
         im=Image.open(pic_file)
         im.size # (width,height) tuple
         coord[0] = int(float(coord[0]) * im.size[0])
         coord[1] = int(float(coord[1]) * im.size[1])
-        print coord
         os.system("cp " + pic_file + " a.jpg")
         faces = facial_detection(pic_file, coord[0], coord[1])
         faceData = {}
-        print "num_faces: " + str(len(faces))
         for face in faces:
           faceData[face] = compare( face[0], "../face_comparison/c1" )
 
-        # For now, I am relying on three matches returned from facial_detection,
-        #   and one from the compare function, but this code should
-        #   be rewritten with loops to avoid assuming a certain number of matches.
-        f1 = faces[0]
-        f2 = faces[1]
-        f3 = faces[2]
+        for index, face in enumerate(faces):
+          face_info = faceData[face]
+          best_match = face_info[0]
+          panel = panel_data[index]
+          panel['right_label']['text'] = best_match[1]
+          insert_img(self, best_match[0], panel['right_pic'])
+          insert_img(self, face[0], panel['left_pic'])
 
-        if len(faces) > 0:
-          f1 = faces[0]
-          print faceData[f1]
-          tup1 = faceData[f1][0]
-          lab1['text'] = tup1[1]
-          insert_img(self, f1[0], p1_1)
-          insert_img(self, tup1[0], p1_2)
-        else:
-          lab1['text'] = "No more faces found"
-
-        if len(faces) > 1:
-          f2 = faces[1]
-          print faceData[f2]
-          tup2 = faceData[f2][0]
-          lab2['text'] = tup2[1]
-          insert_img(self, f2[0], p2_1)
-          insert_img(self, tup1[0], p2_2)
-        else:
-          lab2['text'] = "No more faces found"
-
-        if len(faces) > 2:
-          f3 = faces[2]
-          print faceData[f3]
-          tup3 = faceData[f3][0]
-          lab3['text'] = tup3[1]
-          insert_img(self, f3[0], p3_1)
-          insert_img(self, tup3[0], p3_2)
-        else:
-          lab3['text'] = "No more faces found"
-        #   Best matches for the faces detected 
-        #     (Each of these are actually tuples with the filename and score)
+    
 
       b2 = Button(self, text="Focus camera", command=other)
       b2.grid(row=1,column=0)
