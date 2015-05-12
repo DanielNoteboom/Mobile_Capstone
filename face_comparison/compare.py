@@ -5,7 +5,7 @@ import Queue
 import os.path
 
 #controls the number of matches that the code will return
-NUM_MATCHES = 1
+NUM_MATCHES = 3
 
 # returns an array with the top NUM_MATCHES comparison match
 # @params
@@ -18,8 +18,8 @@ def compare( test, cDir ):
     return None
 
   if not os.path.isdir(cDir):
-    print "Invalid directory " + cDir;
-    return None;
+    print "Invalid directory " + cDir
+    return None
 
   comparisons = listdir(cDir)
 
@@ -28,18 +28,22 @@ def compare( test, cDir ):
     if os.path.isdir(cDir + "/" + identity):
       # find openBR correlation for each image in subdirectory    
       cImages = listdir(cDir + "/" + identity)
-      aggregateIndex = 0;
-      for img in cImages:
-        if os.path.isfile(cDir + "/" + identity + "/" + img):
-          compOutput = Popen(["br", "-algorithm", "FaceRecognition", "-compare", 
-                              test, cDir + "/" + identity + "/" + img],
-                              stdout=PIPE, stderr=PIPE)
-          data = compOutput.communicate()
-          aggregateIndex += float(data[0].strip())
+      aggregateIndex = 0
+      #for img in cImages:
+      #if os.path.isfile(cDir + "/" + identity): # + "/" + img
+      compOutput = Popen(["br", "-algorithm", "FaceRecognition", "-compare", 
+                          test, cDir + "/" + identity], # + "/" + img
+                          stdout=PIPE, stderr=PIPE)
+      data = compOutput.communicate()
+      dataArray = str(data[0]).split()
+      source = str(data[1]).split()[9].split("/")[1]
+      for i in range(len(dataArray)):
+        if i % 2 == 0 and i != 0:
+          aggregateIndex += float(dataArray[i].strip())
       # negative sign is appended because the Queue is a min-queue, but
-      #  want to sort by highest aggregateIndex.
+      # want to sort by highest aggregateIndex.
       matches.put((-aggregateIndex, os.path.abspath(cDir + "/" + identity)))
-    comparisonFiles = listdir(cDir + "/" + identity)
+    # comparisonFiles = listdir(cDir + "/" + identity)
       
   #  
   hits = []
@@ -60,8 +64,8 @@ def compare( test, cDir ):
   #    outfile.write("%s %s\n" % (name, str(index)))
 
 if __name__ == "__main__":
-  if len(sys.argv) != NUM_MATCHES:
-    print "Usage: python main.py IMAGE_PATH COMPARISON_DIRECTORY"
+  if len(sys.argv) != 3:
+    print "Usage: python compare.py IMAGE_PATH COMPARISON_DIRECTORY"
     sys.exit(0)
   else:
     matches = compare(sys.argv[1], sys.argv[2])
