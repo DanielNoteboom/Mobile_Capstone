@@ -64,7 +64,7 @@ class Example(Frame):
       style.configure("TFrame", background="#333")        
       #style.configure("TLabel", background="#333")        
 
-      self.columnconfigure(0,pad=10, minsize=300, weight=1)
+      self.columnconfigure(0,pad=10, minsize=350, weight=1)
       self.columnconfigure(1,pad=10)
 
       self.rowconfigure(0,pad=10, minsize=500, weight=1)
@@ -103,6 +103,10 @@ class Example(Frame):
 
         side_panel1 = Frame(p1, relief=RAISED, borderwidth =1)
         side_panel1.pack(side = RIGHT, fill = BOTH, expand=1)
+        bt = Button(side_panel1, text="Confirm\nMatch", command=other)
+        bt.pack(pady=10)
+        bt = Button(side_panel1, text="Deny\nMatch", command=other)
+        bt.pack(pady=10)
 
         return {"left_pic":pic1, "right_pic":pic2, "right_label":label2}
 
@@ -111,7 +115,6 @@ class Example(Frame):
       panel_data.append( make_panel(upper_frame) )
       panel_data.append( make_panel(upper_frame) )
       panel_data.append( make_panel(upper_frame) )
-
 
       def capture():
         if not test_mode:
