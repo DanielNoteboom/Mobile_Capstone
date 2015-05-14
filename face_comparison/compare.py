@@ -27,25 +27,35 @@ def compare( test, cDir ):
   data = compOutput.communicate()
   # data is contained in fist index of output
   dataArray = str(data[0]).split()
-  counter = 0
+  extCtr = 0
   scores = {}
   for i in range(len(dataArray)):
     if i % 2 == 0 and i != 0:
       scores[counter] = float(dataArray[i])
-      counter += 1
+      extCtr += 1
 
   matches = Queue.PriorityQueue(0)
-  idCtr = 0
+  idCtr = 0 # index in the large array
   comparisons = listdir(cDir)
   # only works because both OpenBR and python recurse thru dirs alphanumerically
   for identity in comparisons:
-    aggregateIndex = 0
+    idScores = []
+    max = 1.0
     if os.path.isdir(cDir + "/" + identity):
       # aggregate all scores for a given id
-      for i in range(len(listdir(cDir + "/" + identity))):
-        aggregateIndex += scores[idCtr]
-        idCtr += 1
-      matches.put((-aggregateIndex, os.path.abspath(cDir + "/" + identity)))
+      images = listdir(cDir + "/" + identity)
+      numImages = len(images)
+      bestImage = 1
+      for i in range(numImages):
+        score = scores[idCtr]
+        if score > max:
+          max = score
+          bestImage = i
+        idScores.append(score)
+      matches.put((-sum(idScores)/numImages, #average
+                  os.path.abspath(cDir + "/" + identity), #id
+                  os.path.abspath(cDir + "/" + identity + "/" + images[bestImage]), #bestImage.jpg
+                  -sorted(idScores)[numImages/2])) #median
 
   # for identity in comparisons:
   #   if os.path.isdir(cDir + "/" + identity):
@@ -64,12 +74,16 @@ def compare( test, cDir ):
   #     # (-) appended b/c min-queue, need max aggregateIndex.
   #     matches.put((-aggregateIndex, os.path.abspath(cDir + "/" + identity)))
 
-  # need to make this a dictionary
   hits = []
   for i in range(NUM_MATCHES):
       try:
           hit = matches.get_nowait()
-          hits.append((hit[1] + "/1.jpg", hit[1].split("/")[-1:][0], -hit[0]))
+          hits.append({
+            'matchPath': hit[3], 
+            'id': hit[1].split("/")[-1:][0], 
+            'average': -hit[0],
+            'median': -hit[3]
+            })
       except Queue.Empty:
       	break
   return hits
