@@ -142,7 +142,7 @@ class Example(Frame):
           best_match = face_matches[0]
           panel = panel_data[index]
           panel['right_label']['text'] = best_match[1]
-          insert_img(self, best_match[0], panel['right_pic'])
+          insert_img(self, best_match['match_path'], panel['right_pic'])
           insert_img(self, face['path'], panel['left_pic'])
 
     

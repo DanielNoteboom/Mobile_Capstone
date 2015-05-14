@@ -70,7 +70,7 @@ def matchInfo( matches ):
       try:
           hit = matches.get_nowait()
           hits.append({
-            'matchPath': hit[2], 
+            'match_path': hit[2], 
             'id': hit[1].split("/")[-1:][0], 
             'average': -hit[0],
             'median': -hit[3]
