@@ -1,9 +1,10 @@
 """
 
-Based on tutorial on zetcode.com:
+Initial code take from tutorial on zetcode.com:
 zetcode.com/gui/tkinter/layout/
 
 """
+
 import os
 import time
 
@@ -145,7 +146,14 @@ class Example(Frame):
           insert_img(self, best_match[0], panel['right_pic'])
           insert_img(self, face['path'], panel['left_pic'])
 
-    
+      def key(event):
+        # 'Enter' key triggers capture.
+        if event.char == '\r':
+          capture()
+
+      # Bind to parent, so that the focus never leaves it. 
+      self.parent.focus_set()
+      self.parent.bind('<Key>', key)
 
       b2 = Button(self, text="Focus camera", command=other)
       b2.grid(row=1,column=0)
