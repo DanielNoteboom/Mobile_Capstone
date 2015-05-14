@@ -21,6 +21,10 @@ def compare( test, cDir ):
     print "Invalid directory " + cDir
     return None
   
+  matches = getMatches(cDir, runOpenBR(test, cDir))
+  return matchInfo(matches)
+
+def runOpenBR( test, cDir ):
   # OpenBR recursively compares across all images in subdirectories
   compOutput = Popen(["br", "-algorithm", "FaceRecognition", "-compare", 
                       test, cDir], stdout=PIPE, stderr=PIPE)
@@ -31,22 +35,7 @@ def compare( test, cDir ):
   for i in range(len(dataArray)):
     if i % 2 == 0 and i != 0:
       scores.append(float(dataArray[i]))
-
-  matches = getMatches(cDir, scores)
-
-  hits = []
-  for i in range(NUM_MATCHES):
-      try:
-          hit = matches.get_nowait()
-          hits.append({
-            'matchPath': hit[2], 
-            'id': hit[1].split("/")[-1:][0], 
-            'average': -hit[0],
-            'median': -hit[3]
-            })
-      except Queue.Empty:
-      	break
-  return hits
+  return scores
 
 def getMatches( cDir, scores ):
   matches = Queue.PriorityQueue(0)
@@ -75,7 +64,22 @@ def getMatches( cDir, scores ):
                   -sorted(idScores)[numImages/2])) #median
   return matches
 
-def compareByDir(cDir, comparisons): #tooSlow
+def matchInfo( matches ):
+  hits = []
+  for i in range(NUM_MATCHES):
+      try:
+          hit = matches.get_nowait()
+          hits.append({
+            'matchPath': hit[2], 
+            'id': hit[1].split("/")[-1:][0], 
+            'average': -hit[0],
+            'median': -hit[3]
+            })
+      except Queue.Empty:
+        return None
+  return hits
+
+def getMatchesBySubDirectory(cDir, comparisons): #tooSlow
   matches = Queue.PriorityQueue(0)
   for identity in comparisons:
     if os.path.isdir(cDir + "/" + identity):  
