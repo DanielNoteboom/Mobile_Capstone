@@ -118,6 +118,7 @@ class Example(Frame):
       panel_data.append( make_panel(upper_frame) )
 
       def capture():
+        coord = []
         if not test_mode:
           pic_file, coord = take_snapshot()
           pic_file = os.path.abspath(pic_file)
@@ -130,7 +131,7 @@ class Example(Frame):
 
         #pupil player failed
         if len(coord) == 0:
-
+          print "add warning"
 
         else:
           im=Image.open(pic_file)
