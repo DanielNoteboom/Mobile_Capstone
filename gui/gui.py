@@ -166,6 +166,11 @@ class Example(Frame):
       if os.name == "posix":
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
+def exit_function():
+  f = open("../pupil/pupil_src/capture/pic/quit.txt", 'w') 
+  f.write("quit")
+import atexit
+atexit.register(exit_function)
 def main():
   root = Tk()
   app = Example(root)
