@@ -65,7 +65,7 @@ class Example(Frame):
       style.configure("TFrame", background="#333")        
       #style.configure("TLabel", background="#333")        
 
-      self.columnconfigure(0,pad=10, minsize=350, weight=1)
+      self.columnconfigure(0,pad=10, minsize=650, weight=1)
       self.columnconfigure(1,pad=10)
 
       self.rowconfigure(0,pad=10, minsize=500, weight=1)
@@ -99,9 +99,24 @@ class Example(Frame):
         pic_frame2.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
         pic2 = Frame(pic_frame2, relief=RAISED, borderwidth =1)
         pic2.pack(side = TOP, fill = BOTH, expand=1)
-        label2 = Label(pic_frame2, relief=RAISED, borderwidth =1, text = "Best match")
+        label2 = Label(pic_frame2, relief=RAISED, borderwidth =1, text = "Match 1")
         label2.pack(side = BOTTOM, fill = BOTH)
 
+        pic_frame3 = Frame(p1, relief=RAISED, borderwidth =1)
+        pic_frame3.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
+        pic3 = Frame(pic_frame3, relief=RAISED, borderwidth =1)
+        pic3.pack(side = TOP, fill = BOTH, expand=1)
+        label3 = Label(pic_frame3, relief=RAISED, borderwidth =1, text = "Match 2")
+        label3.pack(side = BOTTOM, fill = BOTH)
+
+        pic_frame4 = Frame(p1, relief=RAISED, borderwidth =1)
+        pic_frame4.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
+        pic4 = Frame(pic_frame4, relief=RAISED, borderwidth =1)
+        pic4.pack(side = TOP, fill = BOTH, expand=1)
+        label4 = Label(pic_frame4, relief=RAISED, borderwidth =1, text = "Match 3")
+        label4.pack(side = BOTTOM, fill = BOTH)
+
+        #  TODO -- delete this? I think we won't use it.
         side_panel1 = Frame(p1, relief=RAISED, borderwidth =1)
         side_panel1.pack(side = RIGHT, fill = BOTH, expand=1)
         bt = Button(side_panel1, text="Confirm\nMatch", command=other)
@@ -109,7 +124,8 @@ class Example(Frame):
         bt = Button(side_panel1, text="Deny\nMatch", command=other)
         bt.pack(pady=10)
 
-        return {"left_pic":pic1, "right_pic":pic2, "right_label":label2}
+        return {"left_pic":pic1, "match_pics":[pic2, pic3, pic4], 
+                                "match_labels":[label2, label3, label4]}
 
       #  make 3 panels
       panel_data = []
@@ -140,11 +156,11 @@ class Example(Frame):
 
         for index, face in enumerate(faces):
           face_matches = associated_matches[face['path']]
-          best_match = face_matches[0]
           panel = panel_data[index]
-          panel['right_label']['text'] = best_match['id']
-          insert_img(self, best_match['match_path'], panel['right_pic'])
           insert_img(self, face['path'], panel['left_pic'])
+          for j, match in enumerate(face_matches):
+            panel['match_labels'][j]['text'] = match['id'].replace('_',' ')
+            insert_img(self, match['match_path'], panel['match_pics'][j])
 
       def key(event):
         # 'Enter' key triggers capture.
