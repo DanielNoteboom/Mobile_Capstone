@@ -203,7 +203,7 @@ def eye(g_pool,cap_src,cap_size,rx_from_world,eye_id=0):
     glfwSetMouseButtonCallback(main_window,on_button)
     glfwSetCursorPosCallback(main_window,on_pos)
     glfwSetScrollCallback(main_window,on_scroll)
-
+    glfwIconifyWindow(main_window)
     # gl_state settings
     basic_gl_setup()
     g_pool.image_tex = create_named_texture(frame.img.shape)

@@ -66,7 +66,10 @@ def find_coordinates(coord, pic_num):
     coord = f.readline().split()
   if count == 0:
     print "Please plug-in pupil player, place on face, and make sure camera is focused"
-    sys.exit(1)
+
+    f = open("../pupil/pupil_src/capture/pic/quit.txt", 'w') 
+    f.write("quit")
+    sys.exit(0)
   return coord
 
 '''detects the face given the picture file and the coordinate

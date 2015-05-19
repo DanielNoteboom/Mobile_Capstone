@@ -190,6 +190,7 @@ def world(g_pool,cap_src,cap_size):
     glfwInit()
     main_window = glfwCreateWindow(width,height, "World", None, None)
     glfwMakeContextCurrent(main_window)
+    glfwIconifyWindow(main_window)
     cygl.utils.init()
 
     # Register callbacks main_window
@@ -284,7 +285,6 @@ def world(g_pool,cap_src,cap_size):
     pupil_graph.pos = (260,130)
     pupil_graph.update_rate = 5
     pupil_graph.label = "Confidence: %0.2f"
-
     # Event loop
     while not g_pool.quit.value:
 
