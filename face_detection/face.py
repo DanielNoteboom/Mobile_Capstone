@@ -13,7 +13,8 @@ params:
   x_coord-x coordinate of where we are looking for faces
   y_coord-y coordinate of where we are looking for faces
 '''
-def get_top_matches(picture, x_coord, y_coord):
+def get_top_matches(picture, x_coord, y_coord, display_rect = False,
+                    scale_factor=1.1,min_neighbors=2):
   # controls the number of matches that the code returns
   
   def find_distance(x1,y1,x2,y2):
@@ -25,26 +26,27 @@ def get_top_matches(picture, x_coord, y_coord):
   img = cv2.imread(picture)
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   gray = cv2.equalizeHist(gray)
-  faces = face_cascade.detectMultiScale(gray, 1.1, 2)
+  faces = face_cascade.detectMultiScale(gray, scale_factor, min_neighbors)
   
   #Create priority queue with no max size
   best_matches = Queue.PriorityQueue(0)
   
   #find best_matches
   for (x,y,w,h) in faces:
-    #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+    if display_rect:
+      cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
   
     # compare to center of rectangle
     distance = find_distance(x_coord,y_coord,x+w/2.0,y+h/2.0)
     # insert tuple into queue -- the distance is used for ordering,
     #   since tuples are compared lexicographically
     best_matches.put((distance, (x,y,w,h)))
-  cv2.imwrite("a.jpg", img) 
+  if display_rect:
+    cv2.imwrite("boxes.jpg", img) 
   matches = queue_to_list(best_matches, NUM_MATCHES)
   
   result = []
   write_matches(matches, result, img, cv2)
-  print result
   return result
   
       
