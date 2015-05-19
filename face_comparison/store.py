@@ -7,6 +7,8 @@ import shutil
 IMAGE_DIR = "c1"
 
 # stores the parameter image in the comparison folder
+# @param image  the image path to be copied
+# @param id     the id of the image
 def add_training_data( image, id ):
   id.replace(" ", "_")
   identities = listdir(IMAGE_DIR)
