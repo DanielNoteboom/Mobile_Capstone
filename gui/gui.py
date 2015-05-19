@@ -118,6 +118,7 @@ class Example(Frame):
       panel_data.append( make_panel(upper_frame) )
 
       def capture():
+        coord = []
         if not test_mode:
           pic_file, coord = take_snapshot()
           pic_file = os.path.abspath(pic_file)
@@ -128,23 +129,28 @@ class Example(Frame):
           else:
             coord = [0.5,0.5]
 
-        im=Image.open(pic_file)
-        im.size # (width,height) tuple
-        coord[0] = int(float(coord[0]) * im.size[0])
-        coord[1] = int(float(coord[1]) * im.size[1])
-        os.system("cp " + pic_file + " a.jpg")
-        faces = facial_detection(pic_file, coord[0], coord[1])
-        associated_matches = {}
-        for face in faces:
-          associated_matches[face['path']] = compare( face['path'], "../face_comparison/c1" )
+        #pupil player failed
+        if len(coord) == 0:
+          print "add warning"
 
-        for index, face in enumerate(faces):
-          face_matches = associated_matches[face['path']]
-          best_match = face_matches[0]
-          panel = panel_data[index]
-          panel['right_label']['text'] = best_match['id']
-          insert_img(self, best_match['match_path'], panel['right_pic'])
-          insert_img(self, face['path'], panel['left_pic'])
+        else:
+          im=Image.open(pic_file)
+          im.size # (width,height) tuple
+          coord[0] = int(float(coord[0]) * im.size[0])
+          coord[1] = int(float(coord[1]) * im.size[1])
+          os.system("cp " + pic_file + " a.jpg")
+          faces = facial_detection(pic_file, coord[0], coord[1])
+          associated_matches = {}
+          for face in faces:
+            associated_matches[face['path']] = compare( face['path'], "../face_comparison/c1" )
+
+          for index, face in enumerate(faces):
+            face_matches = associated_matches[face['path']]
+            best_match = face_matches[0]
+            panel = panel_data[index]
+            panel['right_label']['text'] = best_match['id']
+            insert_img(self, best_match['match_path'], panel['right_pic'])
+            insert_img(self, face['path'], panel['left_pic'])
 
       def key(event):
         # 'Enter' key triggers capture.
@@ -155,11 +161,10 @@ class Example(Frame):
       self.parent.focus_set()
       self.parent.bind('<Key>', key)
 
+      ent_msg = Label(self, text="Press Enter to capture gaze.", background="#eee")
+      ent_msg.grid(row=1,column=0)
       b2 = Button(self, text="Focus camera", command=other)
-      b2.grid(row=1,column=0)
-      cb = Button(self, text="Capture Gaze", command=capture)
-      cb.grid(row=1,column=1)
-
+      b2.grid(row=1,column=1)
 
       # Some weird hack to bring this window to the front as it is launched. 
       #  Won't work on windows.
