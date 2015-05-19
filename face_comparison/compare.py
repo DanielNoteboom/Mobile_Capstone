@@ -58,10 +58,12 @@ def getMatches( cDir, scores ):
           max = score
           bestImage = i
         idScores.append(score)
-      matches.put((-sum(idScores)/numImages, #average
-                  os.path.abspath(cDir + "/" + identity), #id
-                  os.path.abspath(cDir + "/" + identity + "/" + images[bestImage]), #bestImage.jpg
-                  -sorted(idScores)[numImages/2])) #median
+      if idScores:
+        matches.put((-sorted(idScores)[numImages/2], -sum(idScores)/numImages, #median, average
+                    {
+                      'id': identity,
+                      'match_path': os.path.abspath(cDir + "/" + identity + "/" + images[bestImage])
+                    }))
   return matches
 
 def matchInfo( matches ):
@@ -70,10 +72,10 @@ def matchInfo( matches ):
       try:
           hit = matches.get_nowait()
           hits.append({
-            'match_path': hit[2], 
-            'id': hit[1].split("/")[-1:][0], 
-            'average': -hit[0],
-            'median': -hit[3]
+            'match_path': hit[2]['match_path'], 
+            'id': hit[2]['id'], 
+            'median': -hit[0],
+            'average': -hit[1]
             })
       except Queue.Empty:
         return None
