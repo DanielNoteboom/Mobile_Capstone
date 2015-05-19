@@ -42,7 +42,8 @@ def take_snapshot():
   coord = f.readline().split()
   
   coord = find_coordinates(coord, pic_num)
-  coord = [coord[1], coord[3]]
+  if len(coord) != 0:
+    coord = [coord[1], coord[3]]
   
   return (pic_file, coord)
 
@@ -51,7 +52,7 @@ def take_snapshot():
 params:
   coord-Current coordinate(array of 'x',x-coord,'y',y-coord when correct format
   picnum-current picture number of the current coordinate
-  return coordinate
+  return coordinate or empty list if no coordinate found
 '''
 def find_coordinates(coord, pic_num):
   count = COUNT
@@ -65,11 +66,8 @@ def find_coordinates(coord, pic_num):
     f = open(pic_coord_file, 'r')
     coord = f.readline().split()
   if count == 0:
-    print "Please plug-in pupil player, place on face, and make sure camera is focused"
+    return []
 
-    f = open("../pupil/pupil_src/capture/pic/quit.txt", 'w') 
-    f.write("quit")
-    sys.exit(0)
   return coord
 
 '''detects the face given the picture file and the coordinate

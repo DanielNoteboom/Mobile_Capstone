@@ -134,6 +134,7 @@ class Example(Frame):
       panel_data.append( make_panel(upper_frame) )
 
       def capture():
+        coord = []
         if not test_mode:
           pic_file, coord = take_snapshot()
           pic_file = os.path.abspath(pic_file)
@@ -144,23 +145,27 @@ class Example(Frame):
           else:
             coord = [0.5,0.5]
 
-        im=Image.open(pic_file)
-        im.size # (width,height) tuple
-        coord[0] = int(float(coord[0]) * im.size[0])
-        coord[1] = int(float(coord[1]) * im.size[1])
-        os.system("cp " + pic_file + " a.jpg")
-        faces = facial_detection(pic_file, coord[0], coord[1])
-        associated_matches = {}
-        for face in faces:
-          associated_matches[face['path']] = compare( face['path'], "../face_comparison/c1" )
+        if len(coord) == 0:
+          print "add warning"
 
-        for index, face in enumerate(faces):
-          face_matches = associated_matches[face['path']]
-          panel = panel_data[index]
-          insert_img(self, face['path'], panel['left_pic'])
-          for j, match in enumerate(face_matches):
-            panel['match_labels'][j]['text'] = match['id'].replace('_',' ')
-            insert_img(self, match['match_path'], panel['match_pics'][j])
+        else:
+          im=Image.open(pic_file)
+          im.size # (width,height) tuple
+          coord[0] = int(float(coord[0]) * im.size[0])
+          coord[1] = int(float(coord[1]) * im.size[1])
+          os.system("cp " + pic_file + " a.jpg")
+          faces = facial_detection(pic_file, coord[0], coord[1])
+          associated_matches = {}
+          for face in faces:
+            associated_matches[face['path']] = compare( face['path'], "../face_comparison/c1" )
+
+          for index, face in enumerate(faces):
+            face_matches = associated_matches[face['path']]
+            panel = panel_data[index]
+            insert_img(self, face['path'], panel['left_pic'])
+            for j, match in enumerate(face_matches):
+              panel['match_labels'][j]['text'] = match['id'].replace('_',' ')
+              insert_img(self, match['match_path'], panel['match_pics'][j])
 
       def key(event):
         # 'Enter' key triggers capture.
