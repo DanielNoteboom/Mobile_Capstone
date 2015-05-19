@@ -155,11 +155,10 @@ class Example(Frame):
       self.parent.focus_set()
       self.parent.bind('<Key>', key)
 
+      ent_msg = Label(self, text="Press Enter to capture gaze.", background="#eee")
+      ent_msg.grid(row=1,column=0)
       b2 = Button(self, text="Focus camera", command=other)
-      b2.grid(row=1,column=0)
-      cb = Button(self, text="Capture Gaze", command=capture)
-      cb.grid(row=1,column=1)
-
+      b2.grid(row=1,column=1)
 
       # Some weird hack to bring this window to the front as it is launched. 
       #  Won't work on windows.
