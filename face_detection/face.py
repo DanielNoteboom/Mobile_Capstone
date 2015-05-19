@@ -14,7 +14,7 @@ params:
   y_coord-y coordinate of where we are looking for faces
 '''
 def get_top_matches(picture, x_coord, y_coord, display_rect = False,
-                    scale_factor=1.1,min_neighbors=2):
+                    scale_factor=1.2,min_neighbors=4):
   # controls the number of matches that the code returns
   
   def find_distance(x1,y1,x2,y2):
