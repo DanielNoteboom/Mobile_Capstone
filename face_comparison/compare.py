@@ -74,8 +74,13 @@ def matchInfo( matches ):
           hits.append({
             'match_path': hit[2]['match_path'], 
             'id': hit[2]['id'], 
+<<<<<<< HEAD
             'median': -hit[1],
             'average': -hit[0]
+=======
+            'median': -hit[0],
+            'average': -hit[1]
+>>>>>>> images
             })
       except Queue.Empty:
         return None
