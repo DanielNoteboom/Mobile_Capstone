@@ -3,6 +3,7 @@ from os import listdir
 import sys
 import Queue
 import os.path
+import cv2
 
 #controls the number of matches that the code will return
 NUM_MATCHES = 3
