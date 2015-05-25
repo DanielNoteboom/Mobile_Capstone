@@ -53,7 +53,8 @@ class Example(Frame):
         sizeY = frame.winfo_height()
         sizeX = frame.winfo_width()
         img = Image.open(filename)
-        img = img.resize((sizeY, sizeX), Image.ANTIALIAS)
+        # Subtract 8 for various borders in the frame.
+        img = img.resize((sizeX-8, sizeY-8), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
         lbl1 = Label(frame, image=img)
         lbl1.image = img
