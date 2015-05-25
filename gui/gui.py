@@ -24,9 +24,9 @@ sys.path.insert(0, '..')
 from face_comparison.compare import compare
 from face_detection.face import facial_detection
 
-COUNT = 0
 test_mode = False
 
+WIDGETS = {}
 class Example(Frame):
   
     def __init__(self, parent):
@@ -50,23 +50,23 @@ class Example(Frame):
       # @params
       #   frame   the frame to attach filename to
       def insert_img(self, filename, frame, pic_path, label):
-        global COUNT
         sizeY = frame.winfo_height()
         sizeX = frame.winfo_width()
         img = Image.open(filename)
         img = img.resize((sizeY, sizeX), Image.ANTIALIAS)
         print "pic_pat " + pic_path
         print "label " + label
-        frame.setvar('pic', pic_path)
-        frame.setvar('label', label)
-        COUNT = COUNT + 1
+        print "label is " + label
         # Subtract 8 for various borders in the frame.
         img = img.resize((sizeX-8, sizeY-8), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
         lbl1 = Label(frame, image=img)
+        print lbl1
         lbl1.image = img
         
         lbl1.bind('<Button-1>', save_image)
+        lbl1.setvar('pic', pic_path)
+        lbl1.setvar('label', label)
         lbl1.place(x=frame.winfo_x(), y=frame.winfo_y())
 
       self.parent.title("Student Name Recollection Helper")
@@ -97,12 +97,15 @@ class Example(Frame):
       # Creates a panel in the frame passed in, and returns a list of frame objects
       #  that need to be accessed in the panel
       def save_image(event):
+        print event.widget
         print "save_image!!!"
         folder = "../face_comparison/c1/" + event.widget.getvar('label')
         os.system("ls " + folder + " | wc -l > output.txt")
         f = open("output.txt", 'r')
-        file_number = f.readline()
-        os.system("cp " + event.widget.getvar('pic') + "../face_comparison/c1/" + folder + file_number +".jpg")
+        file_number = str(int(f.readline().rstrip().lstrip()) + 1)
+        command = "cp " + event.widget.getvar('pic') + " " + folder + "/" +  file_number + ".jpg"
+        print command
+        os.system(command)
 
       def make_panel(panel_frame):
         ### Panel 1
