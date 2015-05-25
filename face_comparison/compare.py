@@ -33,12 +33,12 @@ def runOpenBR( test, cDir ):
   # data is contained in fist index of output
   dataArray = str(data[0]).split()
   scores = []
-  for i in range(len(dataArray)):
-    if i % 2 == 0 and i != 0:
+  for i in range(2, len(dataArray)):
+    if i % 2 == 0:
       try:
         scores.append(float(dataArray[i]))
       except ValueError:
-        scores.append(0)
+        pass # nondeterministic pipe output from openbr
   return scores
 
 def getMatches( cDir, scores ):
@@ -56,12 +56,15 @@ def getMatches( cDir, scores ):
       numImages = len(images)
       bestImage = 0
       for i in range(numImages):
-        score = scores[extCtr]
-        extCtr += 1
-        if score > max:
-          max = score
-          bestImage = i
-        idScores.append(score)
+        if extCtr < numImages:
+          score = scores[extCtr]
+          extCtr += 1
+          if score > max:
+            max = score
+            bestImage = i
+          idScores.append(score)
+        else: # add "harmless" mean value if out of range. TODO best approach?
+          idScores.append(sum(idScores)/len(idScores))
       if idScores:
         matches.put((-sum(idScores)/numImages, -sorted(idScores)[numImages/2], #average, median
         #matches.put((-sorted(idScores)[numImages/2], -sum(idScores)/numImages, #median, average
