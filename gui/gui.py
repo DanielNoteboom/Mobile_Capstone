@@ -24,6 +24,7 @@ sys.path.insert(0, '..')
 from face_comparison.compare import compare
 from face_detection.face import facial_detection
 
+COUNT = 0
 test_mode = False
 
 class Example(Frame):
@@ -45,15 +46,20 @@ class Example(Frame):
         lbl1 = Label(self, image=img)
         lbl1.image = img
         lbl1.place(x=x, y=y)
-
       #  Defining a method for framewise positioning of an image
       # @params
       #   frame   the frame to attach filename to
-      def insert_img(self, filename, frame):
+      def insert_img(self, filename, frame, pic_path, label):
+        global COUNT
         sizeY = frame.winfo_height()
         sizeX = frame.winfo_width()
         img = Image.open(filename)
         img = img.resize((sizeY, sizeX), Image.ANTIALIAS)
+        print "pic_pat " + pic_path
+        print "label " + label
+        frame.setvar('pic', pic_path)
+        frame.setvar('label', label)
+        COUNT = COUNT + 1
         img = ImageTk.PhotoImage(img)
         lbl1 = Label(frame, image=img)
         lbl1.image = img
@@ -86,6 +92,13 @@ class Example(Frame):
 
       # Creates a panel in the frame passed in, and returns a list of frame objects
       #  that need to be accessed in the panel
+      def save_image(event):
+        folder = "../face_comparison/c1/" + event.getvar('label')
+        os.system("ls " + folder + " | wc -l > output.txt")
+        f = open("output.txt", 'r')
+        file_number = f.readline()
+        os.system("cp " + event.getvar('pic') + "../face_comparison/c1/" + folder + file_number +".jpg")
+
       def make_panel(panel_frame):
         ### Panel 1
         p1 = Frame(upper_frame, relief=RAISED, borderwidth =1)
@@ -101,6 +114,7 @@ class Example(Frame):
         pic_frame2 = Frame(p1, relief=RAISED, borderwidth =1)
         pic_frame2.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
         pic2 = Frame(pic_frame2, relief=RAISED, borderwidth =1)
+        pic2.bind('<Button-1>', save_image)
         pic2.pack(side = TOP, fill = BOTH, expand=1)
         label2 = Label(pic_frame2, relief=RAISED, borderwidth =1, text = "Match 1")
         label2.pack(side = BOTTOM, fill = BOTH)
@@ -109,12 +123,14 @@ class Example(Frame):
         pic_frame3.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
         pic3 = Frame(pic_frame3, relief=RAISED, borderwidth =1)
         pic3.pack(side = TOP, fill = BOTH, expand=1)
+        pic3.bind('<Button-1>', save_image)
         label3 = Label(pic_frame3, relief=RAISED, borderwidth =1, text = "Match 2")
         label3.pack(side = BOTTOM, fill = BOTH)
 
         pic_frame4 = Frame(p1, relief=RAISED, borderwidth =1)
         pic_frame4.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
         pic4 = Frame(pic_frame4, relief=RAISED, borderwidth =1)
+        pic4.bind('<Button-1>', save_image)
         pic4.pack(side = TOP, fill = BOTH, expand=1)
         label4 = Label(pic_frame4, relief=RAISED, borderwidth =1, text = "Match 3")
         label4.pack(side = BOTTOM, fill = BOTH)
@@ -170,10 +186,10 @@ class Example(Frame):
           for index, face in enumerate(faces):
             face_matches = associated_matches[face['path']]
             panel = panel_data[index]
-            insert_img(self, face['path'], panel['left_pic'])
+            insert_img(self, face['path'], panel['left_pic'], face['path'], "")
             for j, match in enumerate(face_matches):
               panel['match_labels'][j]['text'] = match['id'].replace('_',' ')
-              insert_img(self, match['match_path'], panel['match_pics'][j])
+              insert_img(self, match['match_path'], panel['match_pics'][j], face['path'], match['id'])
 
       def key(event):
         # 'Enter' key triggers capture.
@@ -195,6 +211,7 @@ class Example(Frame):
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
 def exit_function():
+  print "I'm in the exit function"
   f = open("../pupil/pupil_src/capture/pic/quit.txt", 'w') 
   f.write("quit")
 import atexit
@@ -204,8 +221,12 @@ def main():
   app = Example(root)
   root.mainloop()  
 
+def removeQuit(): 
+  os.system("rm ../pupil/pupil_src/capture/pic/quit.txt")
+  os.system("touch ../pupil/pupil_src/capture/pic/quit.txt")
 if __name__ == '__main__':
   if len(sys.argv) > 1:
     test_mode = True
+  removeQuit()#need to make sure quit file is gone!
   main()  
 
