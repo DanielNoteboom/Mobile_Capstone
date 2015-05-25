@@ -34,7 +34,10 @@ def runOpenBR( test, cDir ):
   scores = []
   for i in range(len(dataArray)):
     if i % 2 == 0 and i != 0:
-      scores.append(float(dataArray[i]))
+      try:
+        scores.append(float(dataArray[i]))
+      except ValueError:
+        scores.append(0)
   return scores
 
 def getMatches( cDir, scores ):
