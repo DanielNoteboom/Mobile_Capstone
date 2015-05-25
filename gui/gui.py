@@ -59,6 +59,14 @@ class Example(Frame):
         lbl1.image = img
         lbl1.place(x=frame.winfo_x(), y=frame.winfo_y())
 
+      def mk_label(text, lbl_size):
+        # Returns text centered in a string of length lbl_size.
+        if len(text) >= lbl_size:
+          return text
+        sp1 = (lbl_size - len(text))//2
+        sp2 = lbl_size - len(text) - sp1
+        return " "*sp1 + text + " "*sp2
+
       self.parent.title("Student Name Recollection Helper")
       #self.pack(fill=BOTH, expand=1)
 
@@ -95,29 +103,21 @@ class Example(Frame):
         pic_frame1.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
         pic1 = Frame(pic_frame1, relief=RAISED, borderwidth =1)
         pic1.pack(side = TOP, fill = BOTH, expand=1)
-        label1 = Label(pic_frame1, relief=RAISED, borderwidth =1, text = "Captured face")
+        label1 = Label(pic_frame1, relief=RAISED, borderwidth =1, text = mk_label("Captured face", 18))
         label1.pack(side = BOTTOM, fill = BOTH)
 
-        pic_frame2 = Frame(p1, relief=RAISED, borderwidth =1)
-        pic_frame2.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
-        pic2 = Frame(pic_frame2, relief=RAISED, borderwidth =1)
-        pic2.pack(side = TOP, fill = BOTH, expand=1)
-        label2 = Label(pic_frame2, relief=RAISED, borderwidth =1, text = "Match 1")
-        label2.pack(side = BOTTOM, fill = BOTH)
-
-        pic_frame3 = Frame(p1, relief=RAISED, borderwidth =1)
-        pic_frame3.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
-        pic3 = Frame(pic_frame3, relief=RAISED, borderwidth =1)
-        pic3.pack(side = TOP, fill = BOTH, expand=1)
-        label3 = Label(pic_frame3, relief=RAISED, borderwidth =1, text = "Match 2")
-        label3.pack(side = BOTTOM, fill = BOTH)
-
-        pic_frame4 = Frame(p1, relief=RAISED, borderwidth =1)
-        pic_frame4.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
-        pic4 = Frame(pic_frame4, relief=RAISED, borderwidth =1)
-        pic4.pack(side = TOP, fill = BOTH, expand=1)
-        label4 = Label(pic_frame4, relief=RAISED, borderwidth =1, text = "Match 3")
-        label4.pack(side = BOTTOM, fill = BOTH)
+        match_pictures = []
+        match_labels = []
+        for i in range(3):
+          pic_frame = Frame(p1, relief=RAISED, borderwidth =1)
+          pic_frame.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
+          pic = Frame(pic_frame, relief=RAISED, borderwidth =1)
+          pic.pack(side = TOP, fill = BOTH, expand=1)
+          match_pictures.append(pic)
+          lbl_text = mk_label("Match %d"%(i+1), 18)
+          label = Label(pic_frame, relief=RAISED, borderwidth =1, text = lbl_text)
+          label.pack(side = BOTTOM, fill = BOTH)
+          match_labels.append(label)
 
         #  TODO -- delete this? I think we won't use it.
         side_panel1 = Frame(p1, relief=RAISED, borderwidth =1)
@@ -127,8 +127,8 @@ class Example(Frame):
         bt = Button(side_panel1, text="Deny\nMatch", command=other)
         bt.pack(pady=10)
 
-        return {"left_pic":pic1, "match_pics":[pic2, pic3, pic4], 
-                                "match_labels":[label2, label3, label4]}
+        return {"left_pic":pic1, "match_pics":match_pictures, 
+                                "match_labels":match_labels}
 
       #  make 3 panels
       panel_data = []
