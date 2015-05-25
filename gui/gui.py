@@ -56,14 +56,23 @@ class Example(Frame):
         sizeX = frame.winfo_width()
         img = Image.open(filename)
         img = img.resize((sizeY, sizeX), Image.ANTIALIAS)
-        print "pic_pat " + pic_path
-        print "label " + label
-        frame.setvar('pic', pic_path)
-        frame.setvar('label', label)
         # Subtract 8 for various borders in the frame.
         img = img.resize((sizeX-8, sizeY-8), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
         lbl1 = Label(frame, image=img)
+
+        def save_image(event):
+          folder = "../face_comparison/c1/" + label
+          os.system("ls " + folder + " | wc -l > output.txt")
+          f = open("output.txt", 'r')
+          file_number = str(int(f.readline().rstrip().lstrip()) + 1)
+          command = "cp " + pic_path + " " + folder + "/" +  file_number + ".jpg"
+          print command
+          os.system(command)
+
+          #print 'path:',pic_path
+          #print 'label',label
+        lbl1.bind('<Button-1>',save_image) 
         lbl1.image = img
         lbl1.place(x=frame.winfo_x(), y=frame.winfo_y())
 
@@ -125,7 +134,7 @@ class Example(Frame):
           pic_frame.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
           pic = Frame(pic_frame, relief=RAISED, borderwidth =1)
           pic.pack(side = TOP, fill = BOTH, expand=1)
-          pic.bind('<Button-1>', save_image)
+          #pic.bind('<Button-1>', save_image)
           match_pictures.append(pic)
           label = Label(pic_frame, relief=RAISED, borderwidth =1, 
               text = "Match %d"%(i+1), width=15)
