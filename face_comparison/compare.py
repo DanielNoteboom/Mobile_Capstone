@@ -60,6 +60,7 @@ def getMatches( cDir, scores ):
         idScores.append(score)
       if idScores:
         matches.put((-sum(idScores)/numImages, -sorted(idScores)[numImages/2], #average, median
+        #matches.put((-sorted(idScores)[numImages/2], -sum(idScores)/numImages, #median, average
                     {
                       'id': identity,
                       'match_path': os.path.abspath(cDir + "/" + identity + "/" + images[bestImage])
@@ -74,14 +75,9 @@ def matchInfo( matches ):
           hits.append({
             'match_path': hit[2]['match_path'], 
             'id': hit[2]['id'], 
-<<<<<<< HEAD
             'median': -hit[1],
             'average': -hit[0]
-=======
-            'median': -hit[0],
-            'average': -hit[1]
->>>>>>> images
-            })
+          })
       except Queue.Empty:
         return None
   return hits

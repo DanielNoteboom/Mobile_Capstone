@@ -1,3 +1,5 @@
 from compare import compare
-
-print compare("e2.jpg", "c1")
+import sys
+if len(sys.argv) != 2:
+  print "Usage python practice.py IMAGE_FILE"
+print compare(sys.argv[1], "c1")
