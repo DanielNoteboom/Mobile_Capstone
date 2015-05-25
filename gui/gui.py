@@ -65,6 +65,8 @@ class Example(Frame):
         img = ImageTk.PhotoImage(img)
         lbl1 = Label(frame, image=img)
         lbl1.image = img
+        
+        lbl1.bind('<Button-1>', save_image)
         lbl1.place(x=frame.winfo_x(), y=frame.winfo_y())
 
       self.parent.title("Student Name Recollection Helper")
@@ -95,11 +97,12 @@ class Example(Frame):
       # Creates a panel in the frame passed in, and returns a list of frame objects
       #  that need to be accessed in the panel
       def save_image(event):
-        folder = "../face_comparison/c1/" + event.getvar('label')
+        print "save_image!!!"
+        folder = "../face_comparison/c1/" + event.widget.getvar('label')
         os.system("ls " + folder + " | wc -l > output.txt")
         f = open("output.txt", 'r')
         file_number = f.readline()
-        os.system("cp " + event.getvar('pic') + "../face_comparison/c1/" + folder + file_number +".jpg")
+        os.system("cp " + event.widget.getvar('pic') + "../face_comparison/c1/" + folder + file_number +".jpg")
 
       def make_panel(panel_frame):
         ### Panel 1
