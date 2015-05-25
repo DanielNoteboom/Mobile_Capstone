@@ -3,6 +3,7 @@ from os import listdir
 import sys
 import Queue
 import os.path
+import cv2
 
 #controls the number of matches that the code will return
 NUM_MATCHES = 3
@@ -34,7 +35,10 @@ def runOpenBR( test, cDir ):
   scores = []
   for i in range(len(dataArray)):
     if i % 2 == 0 and i != 0:
-      scores.append(float(dataArray[i]))
+      try:
+        scores.append(float(dataArray[i]))
+      except ValueError:
+        scores.append(0)
   return scores
 
 def getMatches( cDir, scores ):

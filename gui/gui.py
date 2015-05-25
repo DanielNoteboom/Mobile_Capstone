@@ -60,6 +60,8 @@ class Example(Frame):
         frame.setvar('pic', pic_path)
         frame.setvar('label', label)
         COUNT = COUNT + 1
+        # Subtract 8 for various borders in the frame.
+        img = img.resize((sizeX-8, sizeY-8), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
         lbl1 = Label(frame, image=img)
         lbl1.image = img
@@ -108,32 +110,23 @@ class Example(Frame):
         pic_frame1.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
         pic1 = Frame(pic_frame1, relief=RAISED, borderwidth =1)
         pic1.pack(side = TOP, fill = BOTH, expand=1)
-        label1 = Label(pic_frame1, relief=RAISED, borderwidth =1, text = "Captured face")
+        label1 = Label(pic_frame1, relief=RAISED, borderwidth =1, 
+            text ="Captured face", width = 15)
         label1.pack(side = BOTTOM, fill = BOTH)
 
-        pic_frame2 = Frame(p1, relief=RAISED, borderwidth =1)
-        pic_frame2.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
-        pic2 = Frame(pic_frame2, relief=RAISED, borderwidth =1)
-        pic2.bind('<Button-1>', save_image)
-        pic2.pack(side = TOP, fill = BOTH, expand=1)
-        label2 = Label(pic_frame2, relief=RAISED, borderwidth =1, text = "Match 1")
-        label2.pack(side = BOTTOM, fill = BOTH)
-
-        pic_frame3 = Frame(p1, relief=RAISED, borderwidth =1)
-        pic_frame3.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
-        pic3 = Frame(pic_frame3, relief=RAISED, borderwidth =1)
-        pic3.pack(side = TOP, fill = BOTH, expand=1)
-        pic3.bind('<Button-1>', save_image)
-        label3 = Label(pic_frame3, relief=RAISED, borderwidth =1, text = "Match 2")
-        label3.pack(side = BOTTOM, fill = BOTH)
-
-        pic_frame4 = Frame(p1, relief=RAISED, borderwidth =1)
-        pic_frame4.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
-        pic4 = Frame(pic_frame4, relief=RAISED, borderwidth =1)
-        pic4.bind('<Button-1>', save_image)
-        pic4.pack(side = TOP, fill = BOTH, expand=1)
-        label4 = Label(pic_frame4, relief=RAISED, borderwidth =1, text = "Match 3")
-        label4.pack(side = BOTTOM, fill = BOTH)
+        match_pictures = []
+        match_labels = []
+        for i in range(3):
+          pic_frame = Frame(p1, relief=RAISED, borderwidth =1)
+          pic_frame.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
+          pic = Frame(pic_frame, relief=RAISED, borderwidth =1)
+          pic.pack(side = TOP, fill = BOTH, expand=1)
+          pic.bind('<Button-1>', save_image)
+          match_pictures.append(pic)
+          label = Label(pic_frame, relief=RAISED, borderwidth =1, 
+              text = "Match %d"%(i+1), width=15)
+          label.pack(side = BOTTOM, fill = BOTH)
+          match_labels.append(label)
 
         #  TODO -- delete this? I think we won't use it.
         side_panel1 = Frame(p1, relief=RAISED, borderwidth =1)
@@ -143,8 +136,8 @@ class Example(Frame):
         bt = Button(side_panel1, text="Deny\nMatch", command=other)
         bt.pack(pady=10)
 
-        return {"left_pic":pic1, "match_pics":[pic2, pic3, pic4], 
-                                "match_labels":[label2, label3, label4]}
+        return {"left_pic":pic1, "match_pics":match_pictures, 
+                                "match_labels":match_labels}
 
       #  make 3 panels
       panel_data = []
