@@ -75,12 +75,12 @@ def write_matches(matches, result_list, img, cv2):
     expansion = 0.3
     expand_w = w*expansion
     expand_h = h*expansion
-    # TODO -- check bounds?  not sure if an error occurs if we crop
-    #   outside valid image range.
-    x1 = x - expand_w
-    x2 = x + w + expand_w
-    y1 = y - expand_h
-    y2 = y + h + expand_h
+    #  Get image size to avoid over-expanding.
+    height, width, depth = img.shape
+    x1 = max(0, x - expand_w)
+    x2 = min(width, x + w + expand_w)
+    y1 = max(0, y - expand_h)
+    y2 = min(height, y + h + expand_h)
     crop_img = img[y1:y2,x1:x2]
     cv2.imwrite("crop%d.jpg"%i, crop_img)
     # Distance might taken into account later
