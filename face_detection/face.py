@@ -12,8 +12,9 @@ params:
   picture-picture file(jpg, png, and other cv2 formats)
   x_coord-x coordinate of where we are looking for faces
   y_coord-y coordinate of where we are looking for faces
+ each result returned is a dictionary.
 '''
-def get_top_matches(picture, x_coord, y_coord, display_rect = False,
+def facial_detection(picture, x_coord, y_coord, display_rect = False,
                     scale_factor=1.2,min_neighbors=4):
   # controls the number of matches that the code returns
   
