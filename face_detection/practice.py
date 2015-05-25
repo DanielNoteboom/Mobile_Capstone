@@ -1,7 +1,7 @@
 import sys
 from PIL import Image
 
-from face import get_top_matches
+from face import facial_detection
 
 if len(sys.argv) > 1:
   img = sys.argv[1]
@@ -20,7 +20,7 @@ else:
 
 #   run facial detetction on arguments passed in
 
-get_top_matches(img, 0,0,True, scale_factor, min_neighbors)
+facial_detection(img, 0,0,True, scale_factor, min_neighbors)
 
 #  we save the images with rectangles to 'boxes.jpg' in face.py
   

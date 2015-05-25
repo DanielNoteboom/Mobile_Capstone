@@ -30,6 +30,7 @@ class ClickDetect(Plugin):
     if quit.readline() == "quit":
       os.system("rm pic/quit.txt")
       os.system("touch pic/quit.txt")
+      print "I'm quitting"
       self.g_pool.quit.value = True
     count += 1
     count = count % STORED_PICTURES
