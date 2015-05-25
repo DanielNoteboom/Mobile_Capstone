@@ -15,7 +15,7 @@ params:
  each result returned is a dictionary.
 '''
 def facial_detection(picture, x_coord, y_coord, display_rect = False,
-                    scale_factor=1.2,min_neighbors=4):
+                    scale_factor=1.2,min_neighbors=3):
   # controls the number of matches that the code returns
   
   def find_distance(x1,y1,x2,y2):
