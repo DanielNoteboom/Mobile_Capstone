@@ -6,7 +6,7 @@ import os
 import time
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "../face_detection/"))
-from face import get_top_matches
+#from face import get_top_matches
 
 COUNT = 10
 '''sample main method that runs through all the components 
@@ -69,15 +69,6 @@ def find_coordinates(coord, pic_num):
     return []
 
   return coord
-
-'''detects the face given the picture file and the coordinate
-params
-pic_file: picture that you're looking for faces in
-x_coord: x coordinate of face
-y_coord y-coordinate of face
-return: tuple of files that contain top matches'''
-def facial_detection(pic_file, x_coord, y_coord):
-  return get_top_matches(pic_file, x_coord, y_coord)
 
 
 

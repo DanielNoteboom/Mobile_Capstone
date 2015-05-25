@@ -17,10 +17,12 @@ import tkMessageBox
 from ttk import Frame, Style, Button
 from ttk import Entry
 
-from gui_helper import take_snapshot, run_pupil, facial_detection
+from gui_helper import take_snapshot, run_pupil
+
 
 sys.path.insert(0, '..')
 from face_comparison.compare import compare
+from face_detection.face import facial_detection
 
 test_mode = False
 
@@ -158,6 +160,10 @@ class Example(Frame):
           os.system("cp " + pic_file + " a.jpg")
           faces = facial_detection(pic_file, coord[0], coord[1])
           associated_matches = {}
+          if len(faces) == 0:
+            tkMessageBox.showwarning("Error",
+                "No faces were found.")
+
           for face in faces:
             associated_matches[face['path']] = compare( face['path'], 
                   "../face_comparison/c1" )

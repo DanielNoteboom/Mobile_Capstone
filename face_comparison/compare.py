@@ -45,12 +45,12 @@ def getMatches( cDir, scores ):
   for identity in comparisons:
     if os.path.isdir(cDir + "/" + identity):
       idScores = []
-      max = 1.0
+      max = 0.0
 
       # aggregate all scores for a given id
       images = listdir(cDir + "/" + identity)
       numImages = len(images)
-      bestImage = 1
+      bestImage = 0
       for i in range(numImages):
         score = scores[extCtr]
         extCtr += 1
