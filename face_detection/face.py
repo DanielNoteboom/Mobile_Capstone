@@ -70,7 +70,17 @@ def write_matches(matches, result_list, img, cv2):
   for i in range(len(matches)):
     dist = matches[i][0]
     x,y,w,h = matches[i][1]
-    crop_img = img[y:(y+h),x:(x+w)]
+    # expand frame by 30% in all directions to get more of the face
+    expansion = 0.3
+    expand_w = w*expansion
+    expand_h = h*expansion
+    # TODO -- check bounds?  not sure if an error occurs if we crop
+    #   outside valid image range.
+    x1 = x - expand_w
+    x2 = x + w + expand_w
+    y1 = y - expand_h
+    y2 = y + h + expand_h
+    crop_img = img[y1:y2,x1:x2]
     cv2.imwrite("crop%d.jpg"%i, crop_img)
     # Distance might taken into account later
     # Faces are returned as a dictionary

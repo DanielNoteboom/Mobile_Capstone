@@ -13,6 +13,7 @@ import sys
 from PIL import Image, ImageTk
 from Tkinter import Tk, N,S,W,E, Label, BOTH, RIGHT, RAISED, LEFT
 from Tkinter import TOP, BOTTOM
+import tkMessageBox
 from ttk import Frame, Style, Button
 from ttk import Entry
 
@@ -146,7 +147,8 @@ class Example(Frame):
             coord = [0.5,0.5]
 
         if len(coord) == 0:
-          print "add warning"
+          tkMessageBox.showwarning("Error",
+                "Pupil player failed to capture gaze.")
 
         else:
           im=Image.open(pic_file)
@@ -157,8 +159,8 @@ class Example(Frame):
           faces = facial_detection(pic_file, coord[0], coord[1])
           associated_matches = {}
           for face in faces:
-            associated_matches[face['path']] = compare( face['path'], "../face_comparison/c1" )
-
+            associated_matches[face['path']] = compare( face['path'], 
+                  "../face_comparison/c1" )
           for index, face in enumerate(faces):
             face_matches = associated_matches[face['path']]
             panel = panel_data[index]
