@@ -26,6 +26,7 @@ from face_detection.face import facial_detection
 
 test_mode = False
 
+WIDGETS = {}
 class Example(Frame):
   
     def __init__(self, parent):
@@ -70,10 +71,10 @@ class Example(Frame):
           print command
           os.system(command)
 
-          #print 'path:',pic_path
-          #print 'label',label
-        lbl1.bind('<Button-1>',save_image) 
         lbl1.image = img
+        lbl1.bind('<Button-1>', save_image)
+        lbl1.setvar('pic', pic_path)
+        lbl1.setvar('label', label)
         lbl1.place(x=frame.winfo_x(), y=frame.winfo_y())
 
       self.parent.title("Student Name Recollection Helper")
@@ -103,11 +104,15 @@ class Example(Frame):
       # Creates a panel in the frame passed in, and returns a list of frame objects
       #  that need to be accessed in the panel
       def save_image(event):
-        folder = "../face_comparison/c1/" + event.getvar('label')
+        print event.widget
+        print "save_image!!!"
+        folder = "../face_comparison/c1/" + event.widget.getvar('label')
         os.system("ls " + folder + " | wc -l > output.txt")
         f = open("output.txt", 'r')
-        file_number = f.readline()
-        os.system("cp " + event.getvar('pic') + "../face_comparison/c1/" + folder + file_number +".jpg")
+        file_number = str(int(f.readline().rstrip().lstrip()) + 1)
+        command = "cp " + event.widget.getvar('pic') + " " + folder + "/" +  file_number + ".jpg"
+        print command
+        os.system(command)
 
       def make_panel(panel_frame):
         ### Panel 1
