@@ -9,6 +9,9 @@ import cv2
 NUM_MATCHES = 3
 
 # returns an array with the top NUM_MATCHES comparison match
+#the format is a list of dictionaries with each match containing the 
+#following fields
+#
 # @params
 #   test    the image file to be identified
 #   cDir    the directory containing subdirectories of test images
@@ -55,9 +58,11 @@ def getMatches( cDir, scores ):
       images = listdir(cDir + "/" + identity)
       numImages = len(images)
       bestImage = 0
+      print identity
       for i in range(numImages):
         if extCtr < len(scores):
           score = scores[extCtr]
+          print score
           extCtr += 1
           if score > max:
             max = score

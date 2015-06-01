@@ -21,8 +21,7 @@ from gui_helper import take_snapshot, run_pupil
 
 
 sys.path.insert(0, '..')
-from face_comparison.compare import compare
-from face_detection.face import facial_detection
+from facepp.face_plus_plus import facial_detection, compare
 
 test_mode = False
 
@@ -179,6 +178,10 @@ class Example(Frame):
           coord[1] = int(float(coord[1]) * im.size[1])
           os.system("cp " + pic_file + " a.jpg")
           faces = facial_detection(pic_file, coord[0], coord[1])
+          print "facial_detection"
+          print faces
+          print type(faces)
+          print type(faces[0])
           associated_matches = {}
           if len(faces) == 0:
             tkMessageBox.showwarning("Error",
@@ -186,9 +189,13 @@ class Example(Frame):
 
           for face in faces:
             associated_matches[face['path']] = compare( face['path'], 
-                  "../face_comparison/c1" )
+                  'person')
           for index, face in enumerate(faces):
             face_matches = associated_matches[face['path']]
+            print "face_matches"
+            print face_matches
+            print type(face_matches)
+            print type(face_matches[0])
             panel = panel_data[index]
             insert_img(self, face['path'], panel['left_pic'], face['path'], "")
             for j, match in enumerate(face_matches):
@@ -217,6 +224,7 @@ class Example(Frame):
 def exit_function():
   print "I'm in the exit function"
   f = open("../pupil/pupil_src/capture/pic/quit.txt", 'w') 
+  print faces
   f.write("quit")
 import atexit
 atexit.register(exit_function)
