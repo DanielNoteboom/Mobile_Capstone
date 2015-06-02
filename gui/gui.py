@@ -182,13 +182,14 @@ class Example(Frame):
           print faces
           print type(faces)
           print type(faces[0])
+          print faces
           associated_matches = {}
           if len(faces) == 0:
             tkMessageBox.showwarning("Error",
                 "No faces were found.")
 
           for face in faces:
-            associated_matches[face['path']] = compare( face['path'], 
+            associated_matches[face['path']] = compare( face, 
                   'person')
           for index, face in enumerate(faces):
             face_matches = associated_matches[face['path']]

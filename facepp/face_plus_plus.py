@@ -81,5 +81,14 @@ def queue_to_list(q, list_size):
 
 #facial_detection(sys.argv[1], int(sys.argv[2]), int(sys.argv[3]))
 
+def compare(face, group):
+  result = api.recognition.identify(group_name=group, img=File(face['path'])
+  returnList = []
+  for i in range(NUM_MATCHES):
+    name = result['face'][i]['candidate'][i]['person_name']
+    returnList.append({'match_path': os.path.abspath("c1/" + name + "/1.jpg"), 'id': name})
+  return returnList
+      
+
   
  
