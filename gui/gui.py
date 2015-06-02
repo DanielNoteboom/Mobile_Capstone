@@ -115,8 +115,13 @@ class Example(Frame):
         print command
         os.system(command)
 
+      #control_panel = Frame(upper_frame, relief=RAISED, borderwidth =1)
+      #control_panel.pack(side = RIGHT, fill = BOTH, expand=1)
+      #label = Label(control_panel, relief=RAISED, borderwidth =1, 
+          #text = "CONTROL", width=30, height=10)
+      
       def make_panel(panel_frame):
-        ### Panel 1
+        ### P1 is the main panel being made
         p1 = Frame(upper_frame, relief=RAISED, borderwidth =1)
         p1.pack(side = TOP, fill = BOTH, expand=1)
 
@@ -135,6 +140,7 @@ class Example(Frame):
 
         match_pictures = []
         match_labels = []
+        #  These are the tree matches in the panel
         for i in range(3):
           pic_frame = Frame(p1, relief=RAISED, borderwidth =1)
           pic_frame.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
@@ -225,12 +231,11 @@ class Example(Frame):
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
 
 def exit_function():
-  print "I'm in the exit function"
   f = open("../pupil/pupil_src/capture/pic/quit.txt", 'w') 
-  print faces
   f.write("quit")
 import atexit
 atexit.register(exit_function)
+
 def main():
   root = Tk()
   app = Example(root)
