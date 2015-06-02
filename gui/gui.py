@@ -21,7 +21,7 @@ from gui_helper import take_snapshot, run_pupil
 
 
 sys.path.insert(0, '..')
-from facepp.face_plus_plus import facial_detection, compare
+from facepp.face_plus_plus import facial_detection, compare, add_face
 
 test_mode = False
 
@@ -67,6 +67,8 @@ class Example(Frame):
           f = open("output.txt", 'r')
           file_number = str(int(f.readline().rstrip().lstrip()) + 1)
           command = "cp " + pic_path + " " + folder + "/" +  file_number + ".jpg"
+          add_face(pic_path, label)
+          
           print command
           os.system(command)
 
