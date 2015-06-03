@@ -225,7 +225,7 @@ class Example(Frame):
 
           for face in faces:
             associated_matches[face['path']] = compare( face, 
-                  'person', 'c1')
+                  'person', comparison_directory)
           for index, face in enumerate(faces):
             face_matches = associated_matches[face['path']]
             print "face_matches"
