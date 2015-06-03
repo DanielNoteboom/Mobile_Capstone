@@ -8,7 +8,6 @@ import cv2
 API_KEY = 'e700b63583b24090f4827a851469eaea'
 API_SECRET = 'DcksQWqJfvukmXEhQFMbjgcRPltZKiyo'
 SERVER = 'http://api.us.faceplusplus.com/'
-LOCAL_DIRECTORY='../Mobile_Capstones/face_comparison/c1'
 api = API(API_KEY,API_SECRET,srv=SERVER)
 NUM_MATCHES=3
 
@@ -70,7 +69,7 @@ def write_matches(matches, result_list, img):
 def queue_to_list(q, list_size):
   # get a list of matches out of the queue
   matches = []
-  for i in range(NUM_MATCHES):
+  for i in range(list_size):
     try:
       match = q.get_nowait()
       matches.append(match)
@@ -81,14 +80,15 @@ def queue_to_list(q, list_size):
 
 #facial_detection(sys.argv[1], int(sys.argv[2]), int(sys.argv[3]))
 
-def compare(face, group):
+def compare(face, group, classdir='c1'):
   result = api.recognition.identify(group_name=group, img=File(face['path']))
   print "result!!!!!!!!!!!!!"
   print result
   return_list = []
   for i in range(3):
     name = result['face'][0]['candidate'][i]['person_name']
-    return_list.append({'match_path': os.path.abspath("../face_comparison/c1/" + name + "/1.jpg"), 'id': name})
+    return_list.append({'match_path': os.path.abspath("../face_comparison/" + 
+            classdir + "/" + name + "/1.jpg"), 'id': name})
   return return_list
       
 def add_face(img, name):
