@@ -12,7 +12,7 @@ import sys
 
 from PIL import Image, ImageTk
 from Tkinter import Tk, N,S,W,E, Label, BOTH, RIGHT, RAISED, LEFT
-from Tkinter import TOP, BOTTOM
+from Tkinter import TOP, BOTTOM, Menu
 import tkMessageBox
 from ttk import Frame, Style, Button
 from ttk import Entry
@@ -24,9 +24,12 @@ sys.path.insert(0, '..')
 from facepp.face_plus_plus import facial_detection, compare, add_face
 
 test_mode = False
+comparison_directory = "c1"
 
 WIDGETS = {}
 class Example(Frame):
+    def onExit(self):
+        self.quit()
   
     def __init__(self, parent):
         Frame.__init__(self, parent)   
@@ -62,7 +65,8 @@ class Example(Frame):
         lbl1 = Label(frame, image=img)
 
         def save_image(event):
-          folder = "../face_comparison/c1/" + label
+          global comparison_directory
+          folder = "../face_comparison/%s/%s" %(comparison_directory,label)
           os.system("ls " + folder + " | wc -l > output.txt")
           f = open("output.txt", 'r')
           file_number = str(int(f.readline().rstrip().lstrip()) + 1)
@@ -80,6 +84,27 @@ class Example(Frame):
 
       self.parent.title("Student Name Recollection Helper")
       #self.pack(fill=BOTH, expand=1)
+
+      menubar = Menu(self.parent)
+      self.parent.config(menu=menubar)
+  
+      fileMenu = Menu(menubar)
+
+      submenu = Menu(fileMenu)
+      classes = get_dir_names()
+      for cls in classes:
+        #  This nesting is sort of weird, but is necessary. 
+        def make_fn(x):
+          def fn():
+            global comparison_directory
+            comparison_directory = x
+          return fn
+        submenu.add_command(label=cls, command = make_fn(cls))
+          
+      fileMenu.add_cascade(label='Choose Class', menu=submenu, underline=0)
+      fileMenu.add_separator()
+      fileMenu.add_command(label="Exit", command=self.onExit)
+      menubar.add_cascade(label="File", menu=fileMenu)
 
       style = Style()
       style.configure("TButton", padding=(0, 5, 0, 5), 
@@ -106,7 +131,9 @@ class Example(Frame):
       def save_image(event):
         print event.widget
         print "save_image!!!"
-        folder = "../face_comparison/c1/" + event.widget.getvar('label')
+        
+        folder = "../face_comparison/" + comparison_directory + "/" + \
+              event.widget.getvar('label')
         os.system("ls " + folder + " | wc -l > output.txt")
         f = open("output.txt", 'r')
         file_number = str(int(f.readline().rstrip().lstrip()) + 1)
@@ -114,8 +141,13 @@ class Example(Frame):
         print command
         os.system(command)
 
+      #control_panel = Frame(upper_frame, relief=RAISED, borderwidth =1)
+      #control_panel.pack(side = RIGHT, fill = BOTH, expand=1)
+      #label = Label(control_panel, relief=RAISED, borderwidth =1, 
+          #text = "CONTROL", width=30, height=10)
+      
       def make_panel(panel_frame):
-        ### Panel 1
+        ### P1 is the main panel being made
         p1 = Frame(upper_frame, relief=RAISED, borderwidth =1)
         p1.pack(side = TOP, fill = BOTH, expand=1)
 
@@ -134,6 +166,7 @@ class Example(Frame):
 
         match_pictures = []
         match_labels = []
+        #  These are the tree matches in the panel
         for i in range(3):
           pic_frame = Frame(p1, relief=RAISED, borderwidth =1)
           pic_frame.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
@@ -190,9 +223,7 @@ class Example(Frame):
           for face in faces:
             #get the top three matches for each face
             associated_matches[face['path']] = compare( face, 
-                  'person')
-            print "associated_matches"
-            print associated_matches
+                  'person', comparison_directory)
           for index, face in enumerate(faces):
             #get the top three matches for each face
             face_matches = associated_matches[face['path']]
@@ -222,13 +253,20 @@ class Example(Frame):
       #  Won't work on windows.
       if os.name == "posix":
         os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
+      
+
+# Returns the names of the classes (directories) that might contain
+#  photos for comparison. 
+def get_dir_names():
+  contents = os.listdir("../face_comparison")
+  return filter(lambda x: os.path.isdir("../face_comparison/" + x), contents)
 
 def exit_function():
-  print "I'm in the exit function"
   f = open("../pupil/pupil_src/capture/pic/quit.txt", 'w') 
   f.write("quit")
 import atexit
 atexit.register(exit_function)
+
 def main():
   root = Tk()
   app = Example(root)

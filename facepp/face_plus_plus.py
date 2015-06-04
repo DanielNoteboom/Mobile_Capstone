@@ -76,7 +76,7 @@ def write_matches(matches, result_list, img):
 def queue_to_list(q, list_size):
   # get a list of matches out of the queue
   matches = []
-  for i in range(NUM_MATCHES):
+  for i in range(list_size):
     try:
       match = q.get_nowait()
       matches.append(match)
@@ -87,7 +87,7 @@ def queue_to_list(q, list_size):
 
 #facial_detection(sys.argv[1], int(sys.argv[2]), int(sys.argv[3]))
 
-def compare(face, group):
+def compare(face, group, classdir='c1'):
   result = api.recognition.identify(group_name=group, img=File(face['path']))
   print "compare result"
   print result
@@ -98,7 +98,8 @@ def compare(face, group):
     print name;
     print score
 
-    return_list.append({'match_path': os.path.abspath("../face_comparison/c1/" + name + "/1.jpg"), 'id': name, 'score': score})
+    return_list.append({'match_path': os.path.abspath("../face_comparison/" + 
+      classdir + "/" + name + "/1.jpg"), 'id': name, 'score': score})
   return return_list
       
 def add_face(img, name):
