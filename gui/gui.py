@@ -48,6 +48,19 @@ class Example(Frame):
         lbl1 = Label(self, image=img)
         lbl1.image = img
         lbl1.place(x=x, y=y)
+
+      def clear_frame(frame):
+        for child in frame.winfo_children():
+          child.destroy()
+
+      def clear_panel(panel):
+        for match_label in panel['match_labels']:
+          match_label['text'] = ''
+        for pic_frame in panel['match_pics']:
+          clear_frame(pic_frame)
+        clear_frame( panel['left_pic'] )
+        panel['left_pic_label']['text'] = ''
+
       #  Defining a method for framewise positioning of an image
       # @params
       #   frame   the frame to attach filename to
@@ -142,11 +155,6 @@ class Example(Frame):
         print command
         os.system(command)
 
-      #control_panel = Frame(upper_frame, relief=RAISED, borderwidth =1)
-      #control_panel.pack(side = RIGHT, fill = BOTH, expand=1)
-      #label = Label(control_panel, relief=RAISED, borderwidth =1, 
-          #text = "CONTROL", width=30, height=10)
-      
       def make_panel(panel_frame):
         ### P1 is the main panel being made
         p1 = Frame(upper_frame, relief=RAISED, borderwidth =1)
@@ -181,7 +189,7 @@ class Example(Frame):
           match_labels.append(label)
 
 
-        return {"left_pic":pic1, "match_pics":match_pictures, 
+        return {"left_pic":pic1, "left_pic_label":label1,  "match_pics":match_pictures, 
                                 "match_labels":match_labels}
 
       #  make 3 panels
@@ -237,6 +245,14 @@ class Example(Frame):
             for j, match in enumerate(face_matches):
               panel['match_labels'][j]['text'] = match['id'].replace('_',' ')
               insert_img(self, match['match_path'], panel['match_pics'][j], face['path'], match['id'])
+            # Clear the non-match frames
+            for k in range(j+1, len(panel['match_pics'])):
+              clear_frame( panel['match_pics'][k]  )
+              panel['match_labels'][k]['text'] = "No more matches"
+          # Clear the non-match panels
+          for k in range(index+1, len(panel_data)):
+            clear_panel(panel_data[k])
+
 
       def key(event):
         # 'Enter' key triggers capture.
