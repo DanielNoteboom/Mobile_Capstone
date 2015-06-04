@@ -22,8 +22,9 @@ def compare( test, cDir ):
     print "Invalid directory " + cDir
     return None
   
-  matches = getMatches(cDir, runOpenBR(test, cDir))
-  return matchInfo(matches)
+  eigen_matches = get_eigen_matches(cDir, runOpenBR(test, cDir))
+  fisher_matches = get_fisher_matches(test, cDir)
+  return matchInfo(eigen_matches)
 
 def runOpenBR( test, cDir ):
   # OpenBR recursively compares across all images in subdirectories
@@ -41,7 +42,12 @@ def runOpenBR( test, cDir ):
       pass # nondeterministic pipe output from openbr
   return scores
 
-def getMatches( cDir, scores ):
+def get_fisher_matches( test, cDir ):
+  matches = Queue.PriorityQueue(0)
+  
+  return matches
+
+def get_eigen_matches( cDir, scores ):
   matches = Queue.PriorityQueue(0)
   extCtr = 0 # index in the large array
   comparisons = listdir(cDir)
@@ -87,6 +93,8 @@ def matchInfo( matches ):
             'id': hit[2]['id'], 
             'median': -hit[1],
             'average': -hit[0]
+            #'median': -hit[0],
+            #'average': -hit[1]
           })
       except Queue.Empty:
         return None
