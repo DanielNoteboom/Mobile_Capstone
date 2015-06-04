@@ -89,7 +89,6 @@ class Example(Frame):
 
       self.columnconfigure(0,pad=10, minsize=650, weight=1)
       self.columnconfigure(1,pad=10)
-
       self.rowconfigure(0,pad=10, minsize=500, weight=1)
       self.rowconfigure(1,pad=10, weight=1)
 
@@ -178,12 +177,10 @@ class Example(Frame):
           im.size # (width,height) tuple
           coord[0] = int(float(coord[0]) * im.size[0])
           coord[1] = int(float(coord[1]) * im.size[1])
-          os.system("cp " + pic_file + " a.jpg")
           faces = facial_detection(pic_file, coord[0], coord[1])
-          print "facial_detection"
-          print faces
-          print type(faces)
-          print type(faces[0])
+          print "length of faces"
+          print len(faces)
+          print "faces"
           print faces
           associated_matches = {}
           if len(faces) == 0:
@@ -191,17 +188,19 @@ class Example(Frame):
                 "No faces were found.")
 
           for face in faces:
+            #get the top three matches for each face
             associated_matches[face['path']] = compare( face, 
                   'person')
+            print "associated_matches"
+            print associated_matches
           for index, face in enumerate(faces):
+            #get the top three matches for each face
             face_matches = associated_matches[face['path']]
-            print "face_matches"
-            print face_matches
-            print type(face_matches)
-            print type(face_matches[0])
             panel = panel_data[index]
+            #place the captured face in the panel
             insert_img(self, face['path'], panel['left_pic'], face['path'], "")
             for j, match in enumerate(face_matches):
+              #place the matches in the panel
               panel['match_labels'][j]['text'] = match['id'].replace('_',' ')
               insert_img(self, match['match_path'], panel['match_pics'][j], face['path'], match['id'])
 
@@ -227,7 +226,6 @@ class Example(Frame):
 def exit_function():
   print "I'm in the exit function"
   f = open("../pupil/pupil_src/capture/pic/quit.txt", 'w') 
-  print faces
   f.write("quit")
 import atexit
 atexit.register(exit_function)
