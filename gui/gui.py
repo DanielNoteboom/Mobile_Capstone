@@ -210,6 +210,7 @@ class Example(Frame):
           im.size # (width,height) tuple
           coord[0] = int(float(coord[0]) * im.size[0])
           coord[1] = int(float(coord[1]) * im.size[1])
+          print "file name " + pic_file
           faces = facial_detection(pic_file, coord[0], coord[1])
           print "length of faces"
           print len(faces)
@@ -224,6 +225,7 @@ class Example(Frame):
             #get the top three matches for each face
             associated_matches[face['path']] = compare( face, 
                   'person', comparison_directory)
+
           for index, face in enumerate(faces):
             #get the top three matches for each face
             face_matches = associated_matches[face['path']]
@@ -234,6 +236,11 @@ class Example(Frame):
               #place the matches in the panel
               panel['match_labels'][j]['text'] = match['id'].replace('_',' ')
               insert_img(self, match['match_path'], panel['match_pics'][j], face['path'], match['id'])
+            if len(face_matches) == 0:
+              panel['match_labels'][0]['text'] = 'NO MATCH FOUND'
+              
+         
+
 
       def key(event):
         # 'Enter' key triggers capture.

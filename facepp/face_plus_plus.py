@@ -92,6 +92,8 @@ def compare(face, group, classdir='c1'):
   print "compare result"
   print result
   return_list = []
+  if len(result['face']) == 0:
+    return []
   for i in range(len(result['face'][0]['candidate'])):
     name = result['face'][0]['candidate'][i]['person_name']
     score = result['face'][0]['candidate'][i]['confidence']
