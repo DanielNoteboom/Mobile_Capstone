@@ -35,6 +35,8 @@ def take_snapshot():
   pic_num = f.readline().strip();
   #Contains the current snapshot
   pic_file = "../pupil/pupil_src/capture/pic/pic" + pic_num + ".jpg"
+  os.system("cp ../pupil/pupil_src/capture/pic/pic" + pic_num + ".jpg capture.jpg")
+
   #Coordinates of pupil
   pic_coord_file = "../pupil/pupil_src/capture/pic/pic" + pic_num + ".txt"
   print pic_coord_file
@@ -45,7 +47,7 @@ def take_snapshot():
   if len(coord) != 0:
     coord = [coord[1], coord[3]]
   
-  return (pic_file, coord)
+  return ("capture.jpg", coord)
 
 
 '''find the coordinates in the most recent file possible

@@ -127,7 +127,6 @@ class Example(Frame):
 
       self.columnconfigure(0,pad=10, minsize=650, weight=1)
       self.columnconfigure(1,pad=10)
-
       self.rowconfigure(0,pad=10, minsize=500, weight=1)
       self.rowconfigure(1,pad=10, weight=1)
 
@@ -219,12 +218,11 @@ class Example(Frame):
           im.size # (width,height) tuple
           coord[0] = int(float(coord[0]) * im.size[0])
           coord[1] = int(float(coord[1]) * im.size[1])
-          os.system("cp " + pic_file + " a.jpg")
+          print "file name " + pic_file
           faces = facial_detection(pic_file, coord[0], coord[1])
-          print "facial_detection"
-          print faces
-          print type(faces)
-          print type(faces[0])
+          print "length of faces"
+          print len(faces)
+          print "faces"
           print faces
           associated_matches = {}
           if len(faces) == 0:
@@ -232,23 +230,29 @@ class Example(Frame):
                 "No faces were found.")
 
           for face in faces:
+            #get the top three matches for each face
             associated_matches[face['path']] = compare( face, 
                   'person', comparison_directory)
+
+          index = 0
           for index, face in enumerate(faces):
+            #get the top three matches for each face
             face_matches = associated_matches[face['path']]
-            print "face_matches"
-            print face_matches
-            print type(face_matches)
-            print type(face_matches[0])
             panel = panel_data[index]
+            #place the captured face in the panel
             insert_img(self, face['path'], panel['left_pic'], face['path'], "")
+            j = 0
             for j, match in enumerate(face_matches):
+              #place the matches in the panel
               panel['match_labels'][j]['text'] = match['id'].replace('_',' ')
               insert_img(self, match['match_path'], panel['match_pics'][j], face['path'], match['id'])
             # Clear the non-match frames
             for k in range(j+1, len(panel['match_pics'])):
               clear_frame( panel['match_pics'][k]  )
               panel['match_labels'][k]['text'] = "No more matches"
+          if index == 0:
+            clear_panel(panel_data[0])
+            panel_data[0]['left_pic_label']['text'] = "No faces detected"
           # Clear the non-match panels
           for k in range(index+1, len(panel_data)):
             clear_panel(panel_data[k])

@@ -20,6 +20,7 @@ params:
 def facial_detection(img, x_coord, y_coord):
   face= api.detection.detect(img = File(img))
 
+  print "image file " + img
   def find_distance(x1,y1,x2,y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
@@ -43,15 +44,20 @@ def write_matches(matches, result_list, img):
     dist = matches[i][0]
     face = matches[i][1]
     height, width, depth = img.shape
+    print "height " + str(height)
+    print "width " + str(width)
     x_center = face['position']['center']['x'] * width * .01
     y_center = face['position']['center']['y'] * height * .01
-    height, width, depth = img.shape
+    print "x_center " + str(x_center)
+    print "y_center " + str(y_center)
     crop_width = width * face['position']['width'] * .01
     crop_height = height * face['position']['height'] * .01
+    print "crop_width " + str(crop_width)
+    print "crop_height " + str(crop_height)
     x = int(x_center - (crop_width / 2))
     y = int(y_center - (crop_height / 2))
 
-    expansion = 0.3
+    expansion = 0.6
     expand_w = crop_width*expansion
     expand_h = crop_height*expansion
 
@@ -61,8 +67,9 @@ def write_matches(matches, result_list, img):
     y2 = min(height, y + crop_height + expand_h)
 
     crop_img = img[y1:y2,x1:x2]
+    cv2.imwrite("original%d.jpg"%i, img)
     cv2.imwrite("crop%d.jpg"%i, crop_img)
-    result_list.append({'path':os.path.abspath("crop%d.jpg"%i), 'distance':dist, 'face':face})
+    result_list.append({'path':os.path.abspath("crop%d.jpg"%i), 'distance':dist, 'face':face, 'original_path':os.path.abspath("original%d.jpg"%i)})
 
 
 ##changes priority queue to a list with specified amount of matches
@@ -82,19 +89,24 @@ def queue_to_list(q, list_size):
 
 def compare(face, group, classdir='c1'):
   result = api.recognition.identify(group_name=group, img=File(face['path']))
-  print "result!!!!!!!!!!!!!"
+  print "compare result"
   print result
   return_list = []
-  for i in range(3):
+  if len(result['face']) == 0:
+    return []
+  for i in range(len(result['face'][0]['candidate'])):
     name = result['face'][0]['candidate'][i]['person_name']
+    score = result['face'][0]['candidate'][i]['confidence']
+    print name;
+    print score
+
     return_list.append({'match_path': os.path.abspath("../face_comparison/" + 
-            classdir + "/" + name + "/1.jpg"), 'id': name})
+      classdir + "/" + name + "/1.jpg"), 'id': name, 'score': score})
   return return_list
       
 def add_face(img, name):
   face = api.detection.detect(img = File(img))
   face_id = face['face'][0]['face_id']
   api.person.add_face(person_name=name, face_id=face_id)
-  print "added face"
 
    
