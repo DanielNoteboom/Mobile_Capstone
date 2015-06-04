@@ -24,9 +24,9 @@ sys.path.insert(0, '..')
 from face_comparison.compare import compare
 from face_detection.face import facial_detection
 
-COUNT = 0
 test_mode = False
 
+WIDGETS = {}
 class Example(Frame):
   
     def __init__(self, parent):
@@ -50,21 +50,31 @@ class Example(Frame):
       # @params
       #   frame   the frame to attach filename to
       def insert_img(self, filename, frame, pic_path, label):
-        global COUNT
+        # First, remove anything currently in the frame
+        for child in frame.winfo_children():
+          child.destroy()
         sizeY = frame.winfo_height()
         sizeX = frame.winfo_width()
         img = Image.open(filename)
         img = img.resize((sizeY, sizeX), Image.ANTIALIAS)
-        print "pic_pat " + pic_path
-        print "label " + label
-        frame.setvar('pic', pic_path)
-        frame.setvar('label', label)
-        COUNT = COUNT + 1
         # Subtract 8 for various borders in the frame.
         img = img.resize((sizeX-8, sizeY-8), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
         lbl1 = Label(frame, image=img)
+
+        def save_image(event):
+          folder = "../face_comparison/c1/" + label
+          os.system("ls " + folder + " | wc -l > output.txt")
+          f = open("output.txt", 'r')
+          file_number = str(int(f.readline().rstrip().lstrip()) + 1)
+          command = "cp " + pic_path + " " + folder + "/" +  file_number + ".jpg"
+          print command
+          os.system(command)
+
         lbl1.image = img
+        lbl1.bind('<Button-1>', save_image)
+        lbl1.setvar('pic', pic_path)
+        lbl1.setvar('label', label)
         lbl1.place(x=frame.winfo_x(), y=frame.winfo_y())
 
       self.parent.title("Student Name Recollection Helper")
@@ -74,7 +84,7 @@ class Example(Frame):
       style.configure("TButton", padding=(0, 5, 0, 5), 
                       font='serif 10')
       style.configure("TFrame", background="#333")        
-      #style.configure("TLabel", background="#333")        
+      style.configure("TLabel", background="#333")        
 
       self.columnconfigure(0,pad=10, minsize=650, weight=1)
       self.columnconfigure(1,pad=10)
@@ -85,7 +95,6 @@ class Example(Frame):
       self.pack()
 
       def other():
-        # external_method2()
         print "Not implemented"
 
       # Top box
@@ -95,11 +104,15 @@ class Example(Frame):
       # Creates a panel in the frame passed in, and returns a list of frame objects
       #  that need to be accessed in the panel
       def save_image(event):
-        folder = "../face_comparison/c1/" + event.getvar('label')
+        print event.widget
+        print "save_image!!!"
+        folder = "../face_comparison/c1/" + event.widget.getvar('label')
         os.system("ls " + folder + " | wc -l > output.txt")
         f = open("output.txt", 'r')
-        file_number = f.readline()
-        os.system("cp " + event.getvar('pic') + "../face_comparison/c1/" + folder + file_number +".jpg")
+        file_number = str(int(f.readline().rstrip().lstrip()) + 1)
+        command = "cp " + event.widget.getvar('pic') + " " + folder + "/" +  file_number + ".jpg"
+        print command
+        os.system(command)
 
       def make_panel(panel_frame):
         ### Panel 1
@@ -114,6 +127,11 @@ class Example(Frame):
             text ="Captured face", width = 15)
         label1.pack(side = BOTTOM, fill = BOTH)
 
+        info_panel = Frame(p1, relief=RAISED, borderwidth =1)
+        info_panel.pack(side = LEFT, fill = BOTH, expand=1)
+        bt = Label(info_panel, text="Best\nMatches:", background="#ececec")
+        bt.pack(pady=20)
+
         match_pictures = []
         match_labels = []
         for i in range(3):
@@ -121,20 +139,13 @@ class Example(Frame):
           pic_frame.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
           pic = Frame(pic_frame, relief=RAISED, borderwidth =1)
           pic.pack(side = TOP, fill = BOTH, expand=1)
-          pic.bind('<Button-1>', save_image)
+          #pic.bind('<Button-1>', save_image)
           match_pictures.append(pic)
           label = Label(pic_frame, relief=RAISED, borderwidth =1, 
               text = "Match %d"%(i+1), width=15)
           label.pack(side = BOTTOM, fill = BOTH)
           match_labels.append(label)
 
-        #  TODO -- delete this? I think we won't use it.
-        side_panel1 = Frame(p1, relief=RAISED, borderwidth =1)
-        side_panel1.pack(side = RIGHT, fill = BOTH, expand=1)
-        bt = Button(side_panel1, text="Confirm\nMatch", command=other)
-        bt.pack(pady=10)
-        bt = Button(side_panel1, text="Deny\nMatch", command=other)
-        bt.pack(pady=10)
 
         return {"left_pic":pic1, "match_pics":match_pictures, 
                                 "match_labels":match_labels}
@@ -159,7 +170,7 @@ class Example(Frame):
 
         if len(coord) == 0:
           tkMessageBox.showwarning("Error",
-                "Pupil player failed to capture gaze.")
+                "Pupil device failed to capture gaze.")
 
         else:
           im=Image.open(pic_file)
@@ -193,7 +204,7 @@ class Example(Frame):
       self.parent.focus_set()
       self.parent.bind('<Key>', key)
 
-      ent_msg = Label(self, text="Press Enter to capture gaze.", background="#eee")
+      ent_msg = Label(self, text="Press Enter to capture gaze. Click on a matching face to add it to the database.", background="#ececec")
       ent_msg.grid(row=1,column=0)
       b2 = Button(self, text="Focus camera", command=other)
       b2.grid(row=1,column=1)
