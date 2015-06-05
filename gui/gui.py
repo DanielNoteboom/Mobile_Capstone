@@ -241,7 +241,7 @@ class Example(Frame):
             panel = panel_data[index]
             #place the captured face in the panel
             insert_img(self, face['path'], panel['left_pic'], face['path'], "")
-            panel['left_pic_label']['text'] = "No faces detected"
+            panel['left_pic_label']['text'] = "Captured face"
             j = -1
             for j, match in enumerate(face_matches):
               #place the matches in the panel
