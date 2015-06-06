@@ -20,7 +20,6 @@ params:
 def facial_detection(img, x_coord, y_coord):
   face= api.detection.detect(img = File(img))
 
-  print "image file " + img
   def find_distance(x1,y1,x2,y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
@@ -44,16 +43,10 @@ def write_matches(matches, result_list, img):
     dist = matches[i][0]
     face = matches[i][1]
     height, width, depth = img.shape
-    print "height " + str(height)
-    print "width " + str(width)
     x_center = face['position']['center']['x'] * width * .01
     y_center = face['position']['center']['y'] * height * .01
-    print "x_center " + str(x_center)
-    print "y_center " + str(y_center)
     crop_width = width * face['position']['width'] * .01
     crop_height = height * face['position']['height'] * .01
-    print "crop_width " + str(crop_width)
-    print "crop_height " + str(crop_height)
     x = int(x_center - (crop_width / 2))
     y = int(y_center - (crop_height / 2))
 
@@ -85,10 +78,17 @@ def queue_to_list(q, list_size):
   return matches
         
 
-#facial_detection(sys.argv[1], int(sys.argv[2]), int(sys.argv[3]))
 
-def compare(face, group, classdir='c1'):
-  result = api.recognition.identify(group_name=group, img=File(face['path']))
+'''compare face to a class_name and return the facepp api results
+params:
+  face-face to compare to 
+  class_name-class to compare face to
+return:
+  {top 3 matches as a dictionary with keys match_path, id, and score)'''
+def compare(face, class_name):
+  #follows the convention that class_name==group==directory with pictures
+  #returns the comparison results for given face and classname
+  result = api.recognition.identify(group_name=class_name, img=File(face['path']))
   print "compare result"
   print result
   return_list = []
@@ -97,13 +97,15 @@ def compare(face, group, classdir='c1'):
   for i in range(len(result['face'][0]['candidate'])):
     name = result['face'][0]['candidate'][i]['person_name']
     score = result['face'][0]['candidate'][i]['confidence']
-    print name;
-    print score
 
     return_list.append({'match_path': os.path.abspath("../face_comparison/" + 
-      classdir + "/" + name + "/1.jpg"), 'id': name, 'score': score})
+      class_name + "/" + name + "/1.jpg"), 'id': name, 'score': score})
   return return_list
       
+'''Adds face to facepp api
+params:
+  img: image of new face
+  name: name of person to add face to'''
 def add_face(img, name):
   face = api.detection.detect(img = File(img))
   face_id = face['face'][0]['face_id']

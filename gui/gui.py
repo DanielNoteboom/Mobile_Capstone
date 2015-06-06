@@ -22,6 +22,7 @@ from gui_helper import take_snapshot, run_pupil
 
 sys.path.insert(0, '..')
 from facepp.face_plus_plus import facial_detection, compare, add_face
+from facepp.train_groups import update_group
 
 test_mode = False
 comparison_directory = "c1"
@@ -111,6 +112,7 @@ class Example(Frame):
           def fn():
             global comparison_directory
             comparison_directory = x
+            update_group(comparison_directory, comparison_directory)
           return fn
         submenu.add_command(label=cls, command = make_fn(cls))
           
@@ -232,7 +234,9 @@ class Example(Frame):
           for face in faces:
             #get the top three matches for each face
             associated_matches[face['path']] = compare( face, 
-                  'person', comparison_directory)
+                   comparison_directory)
+            print "comparison directory"
+            print comparison_directory
 
           index = 0
           for index, face in enumerate(faces):
