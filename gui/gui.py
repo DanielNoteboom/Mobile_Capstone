@@ -238,14 +238,15 @@ class Example(Frame):
             print "comparison directory"
             print comparison_directory
 
-          index = 0
+          index = -1
           for index, face in enumerate(faces):
             #get the top three matches for each face
             face_matches = associated_matches[face['path']]
             panel = panel_data[index]
             #place the captured face in the panel
             insert_img(self, face['path'], panel['left_pic'], face['path'], "")
-            j = 0
+            panel['left_pic_label']['text'] = "Captured face"
+            j = -1
             for j, match in enumerate(face_matches):
               #place the matches in the panel
               panel['match_labels'][j]['text'] = match['id'].replace('_',' ')
@@ -254,12 +255,11 @@ class Example(Frame):
             for k in range(j+1, len(panel['match_pics'])):
               clear_frame( panel['match_pics'][k]  )
               panel['match_labels'][k]['text'] = "No more matches"
-          if index == 0:
-            clear_panel(panel_data[0])
-            panel_data[0]['left_pic_label']['text'] = "No faces detected"
           # Clear the non-match panels
           for k in range(index+1, len(panel_data)):
             clear_panel(panel_data[k])
+          if index == -1:
+            panel_data[0]['left_pic_label']['text'] = "No faces detected"
 
 
       def key(event):
