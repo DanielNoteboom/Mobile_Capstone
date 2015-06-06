@@ -232,11 +232,11 @@ class Example(Frame):
                 "No faces were found.")
 
           for face in faces:
+            print "comparison directory"
+            print comparison_directory
             #get the top three matches for each face
             associated_matches[face['path']] = compare( face, 
                    comparison_directory)
-            print "comparison directory"
-            print comparison_directory
 
           index = -1
           for index, face in enumerate(faces):
