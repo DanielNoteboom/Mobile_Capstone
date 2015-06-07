@@ -25,26 +25,32 @@ def update_group(group, classdir):
     directory = LOCAL_DIRECTORY + '/' + classdir
     api.group.create(group_name=group)
     for person in os.listdir(directory):
-      if not contains_person(person):
+
+      if contains_person(person):
+        print "person already in dataset"
+      elif person[0] != '.':
         print "adding new person " + person
         api.person.create(person_name=person)
         sub_dir = directory + '/' + person
         for pic in os.listdir(sub_dir):
           pic = sub_dir + '/' + pic
-          face = api.detection.detect(img = File(pic))
-          if len(face['face']) > 0:
-            face_id = face['face'][0]['face_id']
-            api.person.add_face(person_name=person, face_id=face_id)
-            print "found face in " + pic
-          else:
-            print "couldn't find face in " + pic
-      else:
-        print "adding existing person"
-      api.group.add_person(group_name=group,person_name=person)
+          print "picture"
+          print pic
+          if pic[-3:] == "jpg":
+            face = api.detection.detect(img = File(pic))
+            if len(face['face']) > 0:
+              face_id = face['face'][0]['face_id']
+              api.person.add_face(person_name=person, face_id=face_id)
+              print "found face in " + pic
+            else:
+              print "couldn't find face in " + pic
+        api.group.add_person(group_name=group,person_name=person)
+        '''else:
+        print "adding existing person"'''
    
       
-      api.train.identify(group_name=group)
-      print "trained group " + group
+    api.train.identify(group_name=group)
+    print "trained group " + group
 
 '''Find whether person is already added to the dataset
 params:
@@ -60,6 +66,10 @@ def contains_person(person_name):
 params:
   group-group to delete from the dataset'''
 def delete(group):
+  directory = LOCAL_DIRECTORY + '/' + group
+  for person in os.listdir(directory):
+    api.person.delete(person_name=person)
+    print "deleted person " + person
   api.group.delete(group_name=group)
   print group + " deleted"
 
@@ -116,7 +126,7 @@ def checkArgs():
     group_name = sys.argv[2]
     picture = sys.argv[3]
     compare(group_name, picture)
-  elif first_arg=="DELETE_GROUP":
+  elif first_arg=="DELETE_CLASS":
     if len(sys.argv) < 3:
       print "USAGE python train_groups.py DELETE_CLASS {group_name}"
     group_name = sys.argv[2]
