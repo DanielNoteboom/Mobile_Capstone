@@ -25,8 +25,8 @@ from facepp.face_plus_plus import facial_detection, compare, add_face
 from facepp.train_groups import update_group
 
 test_mode = False
-comparison_directory = "c3_extra"
-
+comparison_directory = "CSE_481_photos"
+update_group(comparison_directory, comparison_directory)
 WIDGETS = {}
 class Example(Frame):
     def onExit(self):

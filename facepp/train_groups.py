@@ -25,30 +25,28 @@ def update_group(group, classdir):
     directory = LOCAL_DIRECTORY + '/' + classdir
     api.group.create(group_name=group)
     for person in os.listdir(directory):
-
-      if contains_person(person):
-        print "person already in dataset"
-      elif person[0] != '.':
-        print "adding new person " + person
-        api.person.create(person_name=person)
-        sub_dir = directory + '/' + person
-        for pic in os.listdir(sub_dir):
-          pic = sub_dir + '/' + pic
-          print "picture"
-          print pic
-          if pic[-3:] == "jpg" or pic[-3:] == "JPG":
-            face = api.detection.detect(img = File(pic))
-            if len(face['face']) > 0:
-              face_id = face['face'][0]['face_id']
-              api.person.add_face(person_name=person, face_id=face_id)
-              print "found face in " + pic
-            else:
-              print "couldn't find face in " + pic
-        api.group.add_person(group_name=group,person_name=person)
-        '''else:
-        print "adding existing person"'''
-   
-      
+      if os.path.isdir(directory + "/" + person):
+        if contains_person(person):
+          print "person already in dataset"
+        elif person[0] != '.':
+          print "adding new person " + person
+          api.person.create(person_name=person)
+          sub_dir = directory + '/' + person
+          for pic in os.listdir(sub_dir):
+            picture = sub_dir + '/' + pic
+            print "picture"
+            print picture
+            if pic[-8:] != "DS_Store":
+              face = api.detection.detect(img = File(picture))
+              if len(face['face']) > 0:
+                face_id = face['face'][0]['face_id']
+                api.person.add_face(person_name=person, face_id=face_id)
+                print "found face in " + pic
+              else:
+                print "couldn't find face in " + pic
+          api.group.add_person(group_name=group,person_name=person)
+          '''else:
+          print "adding existing person"'''
     api.train.identify(group_name=group)
     print "trained group " + group
 
@@ -149,7 +147,7 @@ def checkArgs():
       print "USAGE python train_groups.py DELETE_CLASS {group_name}"
     group_name = sys.argv[2]
     delete(group_name)
-  elif first_arg=="GET_GROUPS":
+  elif first_arg=="GET_CLASSES":
     list_groups()
 
   else:
