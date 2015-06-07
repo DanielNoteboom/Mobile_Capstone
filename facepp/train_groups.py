@@ -47,8 +47,6 @@ def update_group(group, classdir):
           api.group.add_person(group_name=group,person_name=person)
           '''else:
           print "adding existing person"'''
-   
-        
     api.train.identify(group_name=group)
     print "trained group " + group
 

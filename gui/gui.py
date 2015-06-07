@@ -271,7 +271,7 @@ class Example(Frame):
       self.parent.focus_set()
       self.parent.bind('<Key>', key)
 
-      ent_msg = Label(self, text="Press Enter to capture gaze. Click on a matching face to add it to the database.", background="#ececec")
+      ent_msg = Label(self, text="Press Enter to capture gaze. Click on a matching face to add the captured face to the daset of the match.", background="#ececec")
       ent_msg.grid(row=1,column=0)
 
       # Some weird hack to bring this window to the front as it is launched. 
