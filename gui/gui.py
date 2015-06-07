@@ -25,7 +25,7 @@ from facepp.face_plus_plus import facial_detection, compare, add_face
 from facepp.train_groups import update_group
 
 test_mode = False
-comparison_directory = "c1"
+comparison_directory = "c3_extra"
 
 WIDGETS = {}
 class Example(Frame):
