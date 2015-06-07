@@ -273,8 +273,6 @@ class Example(Frame):
 
       ent_msg = Label(self, text="Press Enter to capture gaze. Click on a matching face to add it to the database.", background="#ececec")
       ent_msg.grid(row=1,column=0)
-      b2 = Button(self, text="Focus camera", command=other)
-      b2.grid(row=1,column=1)
 
       # Some weird hack to bring this window to the front as it is launched. 
       #  Won't work on windows.
