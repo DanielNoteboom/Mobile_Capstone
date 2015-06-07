@@ -8,6 +8,23 @@ import cv2
 #controls the number of matches that the code will return
 NUM_MATCHES = 3
 
+def compare_multi( test_dir, train_dir):
+  if not os.path.isdir(test_dir):
+    print "Invalid test directory " + cDir
+    return None
+  if not os.path.isdir(train_dir):
+    print "Invalid training directory " + cDir
+    return None
+
+  results = {}
+  identities = os.listdir(test_dir)
+  for identity in identities:
+    images = os.listdir(test_dir+'/'+identity)
+    for image in images:
+      results[str(identity)+str(image)]=compare(os.path.abspath(test_dir+'/'+identity+'/'+image), train_dir)
+  return results
+
+
 # returns an array with the top NUM_MATCHES comparison match
 # @params
 #   test    the image file to be identified
@@ -23,7 +40,6 @@ def compare( test, cDir ):
     return None
   
   eigen_matches = get_eigen_matches(cDir, runOpenBR(test, cDir))
-  fisher_matches = get_fisher_matches(test, cDir)
   return matchInfo(eigen_matches)
 
 def runOpenBR( test, cDir ):
@@ -41,11 +57,6 @@ def runOpenBR( test, cDir ):
     except ValueError:
       pass # nondeterministic pipe output from openbr
   return scores
-
-def get_fisher_matches( test, cDir ):
-  matches = Queue.PriorityQueue(0)
-  
-  return matches
 
 def get_eigen_matches( cDir, scores ):
   matches = Queue.PriorityQueue(0)
@@ -119,8 +130,17 @@ def getMatchesBySubDirectory(cDir, comparisons): #tooSlow
 
 if __name__ == "__main__":
   if len(sys.argv) != 3:
-    print "Usage: python compare.py IMAGE_PATH COMPARISON_DIRECTORY"
+    print "Usage: python compare.py IMAGE_PATH|TEST_DIR_PATH COMPARISON_DIRECTORY"
     sys.exit(0)
   else:
-    matches = compare(sys.argv[1], sys.argv[2])
-    print matches
+    if os.path.isdir(sys.argv[1]):
+      matches = compare_multi(sys.argv[1], sys.argv[2])
+      for test in matches.keys():
+        print test + ": "
+        i = 1
+        for match in matches[test]:
+          print str(i) + ": " + match['id']
+          i += 1
+    elif os.path.isfile(sys.argv[1]):
+      matches = compare(sys.argv[1], sys.argv[2])
+      print matches

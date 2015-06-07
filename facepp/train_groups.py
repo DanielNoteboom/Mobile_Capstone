@@ -82,6 +82,16 @@ def compare(group, url):
   print 'The person with highest confidence:', \
           result['face'][0]['candidate'][0]['person_name']
 
+'''Get comparison results for a directory of images of persons compared to the group
+params:
+  group-group to look for recognition in
+  url-Image of person to compare to group'''
+def compare_multi(group, test_dir):
+  identities = os.listdir(test_dir)
+  for identity in identities:
+    images = os.listdir(test_dir+'/'+identity)
+    for image in images:
+      compare(group, os.path.abspath(LOCAL_DIRECTORY+'/'+test_dir+'/'+identity+'/'+image))
 
 '''Find whether group name is already added to dataset
 params:
@@ -106,6 +116,7 @@ def usage():
   print "CREATE_CLASS {class_name(directory name relative to face_comparison)}"
   print "DELETE_CLASS {class_name}"
   print "COMPARE {class_name} {picture}"
+  print "COMPARE_MULTI {class_name} {test_dir}"
   print "GET_CLASSES"
 
 '''Check whether the arguments are correct'''
@@ -125,6 +136,12 @@ def checkArgs():
     group_name = sys.argv[2]
     picture = sys.argv[3]
     compare(group_name, picture)
+  elif first_arg=="COMPARE_MULTI":
+    if len(sys.argv) < 4:
+      print "USAGE python train_groups.py COMPARE_MULTI {class_name} {test_dir}"
+      group_name = sys.argv[2]
+      test_dir = sys.argv[3]
+      compare_multi(group_name, picture)
   elif first_arg=="DELETE_CLASS":
     if len(sys.argv) < 3:
       print "USAGE python train_groups.py DELETE_CLASS {group_name}"
