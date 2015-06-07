@@ -68,8 +68,9 @@ params:
 def delete(group):
   directory = LOCAL_DIRECTORY + '/' + group
   for person in os.listdir(directory):
-    api.person.delete(person_name=person)
-    print "deleted person " + person
+    if contains_person(person)
+      api.person.delete(person_name=person)
+      print "deleted person " + person
   api.group.delete(group_name=group)
   print group + " deleted"
 
