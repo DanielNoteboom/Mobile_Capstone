@@ -36,7 +36,7 @@ def update_group(group, classdir):
           pic = sub_dir + '/' + pic
           print "picture"
           print pic
-          if pic[-3:] == "jpg":
+          if pic[-3:] == "jpg" or pic[-3:] == "JPG":
             face = api.detection.detect(img = File(pic))
             if len(face['face']) > 0:
               face_id = face['face'][0]['face_id']
@@ -68,7 +68,7 @@ params:
 def delete(group):
   directory = LOCAL_DIRECTORY + '/' + group
   for person in os.listdir(directory):
-    if contains_person(person)
+    if contains_person(person):
       api.person.delete(person_name=person)
       print "deleted person " + person
   api.group.delete(group_name=group)
