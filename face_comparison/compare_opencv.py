@@ -20,7 +20,7 @@ class FaceComparer:
 		# self.name_ints = {}
 		self.avg_width  = 0
 		self.avg_height = 0
-		self.thresholds = [8000, 5000, 200]
+		self.thresholds = [8000,5000,240]#[6000, 5300, 220] #[7000, 5000, 250] #
 
 		self.train(dir)
 
@@ -29,7 +29,7 @@ class FaceComparer:
 			scores[s] /= float(thresholds[s])
 		return scores
 
-	def train(self, dir):
+	def prep_training_set(self, dir, look_for_faces):
 		num_images = 0
 
 		trains = []
@@ -53,13 +53,24 @@ class FaceComparer:
 				# img = np.array(img_pil, 'uint8')
 				# detected_faces = self.face_cascade.detectMultiScale(img)
 				# print str(len(detected_faces)) + " faces added for " + identity
-				for (x, y, w, h) in detected_faces:
-					trains.append(img[y: y + h, x: x + w])
+				
+				if look_for_faces:
+					for (x, y, w, h) in detected_faces:
+						trains.append(img[y: y + h, x: x + w])
+						labels.append(label)
+					# trains.append(img)
+					# labels.append(label)
+					# w, h = img.shape[:2]
+						self.avg_width += w
+						self.avg_height += h
+						num_images += 1
+				else:
+					trains.append(img)
 					labels.append(label)
+					w, h = img.shape[:2]
 					self.avg_width += w
 					self.avg_height += h
 					num_images += 1
-				# w, h = img.shape[:2]
 			label += 1
 		self.avg_width /= float(num_images)
 		self.avg_height /= float(num_images)
@@ -70,13 +81,21 @@ class FaceComparer:
 			# cv2.imshow("Adding faces to training set...", trains[i])
 			# cv2.waitKey(50)
 
-		print self.int_names
-		print len(trains)
-		print len(labels)
+		return trains, labels
 
-		self.eigen.train(trains, np.asarray(labels))
-		self.fisher.train(trains, np.asarray(labels))
-		self.lbph.train(trains, np.asarray(labels))
+	def train(self, dir):
+		trains, labels = self.prep_training_set(dir, True)
+
+		print self.int_names
+		try:
+			self.fisher.train(trains, np.asarray(labels))
+			self.eigen.train(trains, np.asarray(labels))
+			self.lbph.train(trains, np.asarray(labels))
+		except:
+			trains, labels = self.prep_training_set(dir, False)
+			self.fisher.train(trains, np.asarray(labels))
+			self.eigen.train(trains, np.asarray(labels))
+			self.lbph.train(trains, np.asarray(labels))
 		
 
 	# returns the predicted identity of the test image
@@ -94,7 +113,7 @@ class FaceComparer:
 			p_eigen  = self.eigen.predict(face)
 			p_fisher = self.fisher.predict(face)
 			p_lbph   = self.lbph.predict(face)
-			scores = [p_eigen[1], p_fisher[1], p_lbph[1]] # self.normalize(, thresholds)
+			scores = self.normalize([p_eigen[1], p_fisher[1], p_lbph[1]], thresholds)
 			# print "Prediction: " + str(self.int_names[p_eigen[0]])
 			# print "Confidence: " + str(scores[0])
 			# print "Prediction: " + str(self.int_names[p_fisher[0]])

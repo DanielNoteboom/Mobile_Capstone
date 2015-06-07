@@ -5,16 +5,16 @@ import os
 def find_threshold(cX):
 	fc = FaceComparer(cX+'_train')
 	acc = 0
-	thresholds = [11000, 4500, 220]
+	thresholds = [5000, 4000, 150]
 	best_thresh = []
 
-	for i in xrange(thresholds[0], 13000, 1000):
-		for j in xrange(thresholds[1], 7000, 500):
-			for k in xrange(thresholds[2], 250, 10):
+	for i in xrange(thresholds[0], 15000, 2500):
+		for j in xrange(thresholds[1], 8000, 1000):
+			for k in xrange(thresholds[2], 260, 100):
 				print "Testing [" + str(i) + ", " + str(j) + ", " + str(k) + "]: ",
 				local_accuracy = accuracy(fc, cX+'_test', [i, j, k])
 				print str(local_accuracy)
-				if local_accuracy >= acc:
+				if local_accuracy > acc:
 					acc = local_accuracy
 					best_thresh = [i, j, k]
 	return best_thresh
@@ -36,6 +36,8 @@ def accuracy(fc, test_dir, thresholds):
 	return correct/float(ct)
 
 def test(train_dir, test_dir):
+	correct = 0
+	num_tests = 0
 	fc = FaceComparer(train_dir)
 	identities = os.listdir(test_dir)
 	for identity in identities:
@@ -44,10 +46,11 @@ def test(train_dir, test_dir):
 			print "Testing " + str(identity)
 			res = fc.predict_test(test_dir+'/'+identity+'/'+image, None)
 			print " " + str(res)
-			# if res is None:
-			# 	print ", closest match: NOT FOUND."
-			# else:
-			# 	", closest match: " + str(res[0])
+			if res is not None:
+				if res[0] == identity:
+					correct += 1
+				num_tests += 1
+	print "Accuracy: " + str(correct/float(num_tests))
 
 if __name__ == "__main__":
   if len(sys.argv) != 3 and len(sys.argv) != 2:
