@@ -28,6 +28,8 @@ test_mode = False
 comparison_directory = "c1"
 update_group(comparison_directory, comparison_directory)
 WIDGETS = {}
+info_box = None
+
 class Example(Frame):
     def onExit(self):
         self.quit()
@@ -86,6 +88,7 @@ class Example(Frame):
           file_number = str(int(f.readline().rstrip().lstrip()) + 1)
           command = "cp " + pic_path + " " + folder + "/" +  file_number + ".jpg"
           add_face(pic_path, label)
+          info_box['text'] = "Saved %s to %s" % (pic_path, folder)
           
           print command
           os.system(command)
@@ -271,8 +274,9 @@ class Example(Frame):
       self.parent.focus_set()
       self.parent.bind('<Key>', key)
 
-      ent_msg = Label(self, text="Press Enter to capture gaze. Click on a matching face to add the captured face to the daset of the match.", background="#ececec")
-      ent_msg.grid(row=1,column=0)
+      global info_box
+      info_box = Label(self, text="Press Enter to capture gaze. Click on a matching face to add the captured face to the daset of the match.", background="#ececec")
+      info_box.grid(row=1,column=0)
 
       # Some weird hack to bring this window to the front as it is launched. 
       #  Won't work on windows.
