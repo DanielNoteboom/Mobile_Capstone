@@ -20,7 +20,7 @@ class FaceComparer:
 		# self.name_ints = {}
 		self.avg_width  = 0
 		self.avg_height = 0
-		self.thresholds = [8000,5000,240]#[6000, 5300, 220] #[7000, 5000, 250] #
+		self.thresholds = [7000, 5000, 250]#[8000,5000,240]#[6000, 5300, 220] # #[1,1,1]
 
 		self.train(dir)
 
@@ -78,8 +78,8 @@ class FaceComparer:
 		# resize all images to average width and height
 		for i in range(len(trains)):
 			trains[i] = cv2.resize(trains[i], (int(self.avg_width), int(self.avg_height)))
-			# cv2.imshow("Adding faces to training set...", trains[i])
-			# cv2.waitKey(50)
+			cv2.imshow("Adding faces to training set...", trains[i])
+			cv2.waitKey(100)
 
 		return trains, labels
 
