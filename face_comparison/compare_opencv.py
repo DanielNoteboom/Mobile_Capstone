@@ -20,7 +20,7 @@ class FaceComparer:
 		# self.name_ints = {}
 		self.avg_width  = 0
 		self.avg_height = 0
-		self.thresholds = [7000, 5000, 250]#[8000,5000,240]#[6000, 5300, 220] # #[1,1,1]
+		self.thresholds = [7000, 5000, 250]#[8000,5000,240]#[6000, 5300, 220]
 
 		self.train(dir)
 
@@ -78,8 +78,8 @@ class FaceComparer:
 		# resize all images to average width and height
 		for i in range(len(trains)):
 			trains[i] = cv2.resize(trains[i], (int(self.avg_width), int(self.avg_height)))
-			cv2.imshow("Adding faces to training set...", trains[i])
-			cv2.waitKey(100)
+			# cv2.imshow("Adding faces to training set...", trains[i])
+			# cv2.waitKey(100)
 
 		return trains, labels
 
@@ -134,9 +134,64 @@ class FaceComparer:
 			else:
 				return (self.int_names[p_lbph[0]], 'Linear Binary Pattern Histograms')
 
-	# updating not supported for eigen nor fisher faces
-	# def update(self, train, label):
-	# 	train_img = cv2.imread(train, cv2. IMREAD_GRAYSCALE)
-	# 	train_img = cv2.resize(train_img, (self.avg_width, self.avg_height))
-	# 	if label in self.name_ints.keys():
-	# 		self.fisher.update(train_img, self.name_ints[label])
+def find_threshold(cX):
+	fc = FaceComparer(cX)
+	acc = 0
+	thresholds = [1, 1000, 1]
+	best_thresh = []
+
+	for i in xrange(thresholds[0], 15002, 5000):
+		for j in xrange(thresholds[1], 9002, 2000):
+			for k in xrange(thresholds[2], 302, 100):
+				print "Testing [" + str(i) + ", " + str(j) + ", " + str(k) + "]: ",
+				local_accuracy = accuracy(fc, cX+'_test', [i, j, k])
+				print str(local_accuracy)
+				if local_accuracy > acc:
+					acc = local_accuracy
+					best_thresh = [i, j, k]
+	return best_thresh
+
+def accuracy(fc, test_dir, thresholds):
+	correct = 0
+	ct = 0
+	
+	identities = os.listdir(test_dir)
+	for identity in identities:
+		images = os.listdir(test_dir+'/'+identity)
+		for image in images:
+			res = fc.predict_test(test_dir+'/'+identity+'/'+image, None)
+			if res is not None:
+				# print str(test_labels[test]) + " predicted as " + str(res[0]) + " using " + str(res[1])
+				if res[0] == identity:
+					correct += 1
+				ct += 1
+	return correct/float(ct)
+
+def test(train_dir, test_dir):
+	correct = 0
+	num_tests = 0
+	fc = FaceComparer(train_dir)
+	identities = os.listdir(test_dir)
+	for identity in identities:
+		images = os.listdir(test_dir+'/'+identity)
+		for image in images:
+			print "Testing " + str(identity)
+			res = fc.predict_test(test_dir+'/'+identity+'/'+image, None)
+			print " " + str(res)
+			if res is not None:
+				if res[0] == identity:
+					correct += 1
+				num_tests += 1
+	print "Accuracy: " + str(correct/float(num_tests))
+
+if __name__ == "__main__":
+  if len(sys.argv) != 3 and len(sys.argv) != 2:
+    print "Usage: python compare_opencv.py TRAIN_DIR TEST_DIR"
+    sys.exit(0)
+  elif len(sys.argv) == 3:
+  	train_dir = sys.argv[1]
+  	test_dir  = sys.argv[2]
+  	test(train_dir, test_dir)
+  else:
+  	best_thresh = find_threshold(sys.argv[1])
+  	print best_thresh
