@@ -8,7 +8,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "../face_detection/"))
 #from face import get_top_matches
 
-COUNT = 10
+COUNT = 1000
 '''sample main method that runs through all the components 
 to give an idea of how functions should be used'''
 def main():
@@ -58,13 +58,17 @@ params:
 '''
 def find_coordinates(coord, pic_num):
   count = COUNT
-  adj_pic_num = pic_num
   while len(coord) != 4 and count > 0:
     pic_num = int(pic_num) - 1
     count = count- 1
     if pic_num < 0:
-      adj_pic_num = COUNT + pic_num
-    pic_coord_file = "../pupil/pupil_src/capture/pic/pic" + str(adj_pic_num) + ".txt"
+      folder = "../pupil/pupil_src/capture/pic/"
+      os.system("ls " + folder + " | wc -l > output.txt")
+      f = open("output.txt", 'r')
+      file_number = str(int(f.readline().rstrip().lstrip()) / 2)
+      pic_num = pic_num % min(file_number, COUNT)
+      #adj_pic_num = COUNT + pic_num
+    pic_coord_file = "../pupil/pupil_src/capture/pic/pic" + str(pic_num) + ".txt"
     f = open(pic_coord_file, 'r')
     coord = f.readline().split()
   if count == 0:
