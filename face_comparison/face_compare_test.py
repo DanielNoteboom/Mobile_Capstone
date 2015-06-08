@@ -3,7 +3,7 @@ import sys
 import os
 
 def find_threshold(cX):
-	fc = FaceComparer(cX+'_train')
+	fc = FaceComparer(cX)
 	acc = 0
 	thresholds = [5000, 4000, 150]
 	best_thresh = []

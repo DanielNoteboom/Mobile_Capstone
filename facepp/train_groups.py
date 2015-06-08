@@ -76,22 +76,27 @@ def delete(group):
 params:
   group-group to look for recognition in
   url-Image of person to compare to group'''
-def compare(group, url):
+def compare(group, url, verbose):
   result = api.recognition.identify(group_name=group, img=File(url))
-  print result
-  print 'The person with highest confidence:', \
-          result['face'][0]['candidate'][0]['person_name']
+  if verbose:
+    print result
+  if result is not None:
+    print 'The person with highest confidence:', \
+            result['face'][0]['candidate'][0]['person_name']
+  else:
+    print 'No match found'
 
 '''Get comparison results for a directory of images of persons compared to the group
 params:
   group-group to look for recognition in
   url-Image of person to compare to group'''
 def compare_multi(group, test_dir):
-  identities = os.listdir(test_dir)
+  identities = os.listdir(LOCAL_DIRECTORY+'/'+test_dir)
   for identity in identities:
-    images = os.listdir(test_dir+'/'+identity)
+    images = os.listdir(LOCAL_DIRECTORY+'/'+test_dir+'/'+identity)
     for image in images:
-      compare(group, os.path.abspath(LOCAL_DIRECTORY+'/'+test_dir+'/'+identity+'/'+image))
+      print identity + ": ",
+      compare(group, os.path.abspath(LOCAL_DIRECTORY+'/'+test_dir+'/'+identity+'/'+image), verbose=False)
 
 '''Find whether group name is already added to dataset
 params:
@@ -135,13 +140,13 @@ def checkArgs():
       print "USAGE python train_groups.py COMPARE {group_name} {picture}"
     group_name = sys.argv[2]
     picture = sys.argv[3]
-    compare(group_name, picture)
+    compare(group_name, picture, verbose=True)
   elif first_arg=="COMPARE_MULTI":
     if len(sys.argv) < 4:
       print "USAGE python train_groups.py COMPARE_MULTI {class_name} {test_dir}"
-      group_name = sys.argv[2]
-      test_dir = sys.argv[3]
-      compare_multi(group_name, picture)
+    group_name = sys.argv[2]
+    test_dir = sys.argv[3]
+    compare_multi(group_name, test_dir)
   elif first_arg=="DELETE_CLASS":
     if len(sys.argv) < 3:
       print "USAGE python train_groups.py DELETE_CLASS {group_name}"

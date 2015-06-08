@@ -17,11 +17,23 @@ def compare_multi( test_dir, train_dir):
     return None
 
   results = {}
+  ct = 0
+  correct = 0
+  correct_or_close = 0
   identities = os.listdir(test_dir)
   for identity in identities:
     images = os.listdir(test_dir+'/'+identity)
     for image in images:
-      results[str(identity)+str(image)]=compare(os.path.abspath(test_dir+'/'+identity+'/'+image), train_dir)
+      res = compare(os.path.abspath(test_dir+'/'+identity+'/'+image), train_dir)
+      if res[0]['id'] == identity:
+        correct += 1
+        correct_or_close += 1
+      if res[1]['id'] == identity or res[2]['id'] == identity:
+        correct_or_close += 1
+      results[str(identity)+str(image)] = res
+      ct += 1
+  print "Fraction correct = " + str(correct/float(ct))
+  print "Fraction close   = " + str(correct_or_close/float(ct))
   return results
 
 
@@ -130,17 +142,17 @@ def getMatchesBySubDirectory(cDir, comparisons): #tooSlow
 
 if __name__ == "__main__":
   if len(sys.argv) != 3:
-    print "Usage: python compare.py IMAGE_PATH|TEST_DIR_PATH COMPARISON_DIRECTORY"
+    print "Usage: python compare.py COMPARISON_DIRECTORY IMAGE_PATH|TEST_DIR_PATH"
     sys.exit(0)
   else:
-    if os.path.isdir(sys.argv[1]):
-      matches = compare_multi(sys.argv[1], sys.argv[2])
+    if os.path.isdir(sys.argv[2]):
+      matches = compare_multi(sys.argv[2], sys.argv[1])
       for test in matches.keys():
         print test + ": "
         i = 1
         for match in matches[test]:
           print str(i) + ": " + match['id']
           i += 1
-    elif os.path.isfile(sys.argv[1]):
-      matches = compare(sys.argv[1], sys.argv[2])
+    elif os.path.isfile(sys.argv[2]):
+      matches = compare(sys.argv[2], sys.argv[1])
       print matches
