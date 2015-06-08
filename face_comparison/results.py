@@ -19,7 +19,7 @@ def analyze_results(directory):
       if len(faces) != 1:
         print "There should be 1 and only 1 face in the picture"
       face = faces[0]
-      matches = compare(face, directory)
+      matches = compare(face, directory, verbose=True)
       for j, match in enumerate(matches):
         if j == 0 and match['id'] == person:
           correct += 1
