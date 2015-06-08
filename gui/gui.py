@@ -99,7 +99,7 @@ class Example(Frame):
         lbl1.setvar('label', label)
         lbl1.place(x=frame.winfo_x(), y=frame.winfo_y())
 
-      self.parent.title("Student Name Recollection Helper")
+      self.parent.title("Eyedentify")
       #self.pack(fill=BOTH, expand=1)
 
       menubar = Menu(self.parent)
