@@ -14,13 +14,14 @@ def analyze_results(directory):
     print "person"
     print person
     if os.path.isdir(directory + "_test/" + person):
-      total += 1
       for face in os.listdir(directory + "_test/" + person):
+        total += 1
         if face[-8:] != "DS_Store":
           print face
           faces = facial_detection(directory + "_test" + "/" + person + "/" +  face, 0, 0)
           if len(faces) != 1:
             print "There should be 1 and only 1 face in the picture"
+            continue
           face = faces[0]
           matches = compare(face, directory)
           for j, match in enumerate(matches):
@@ -30,7 +31,7 @@ def analyze_results(directory):
             elif match['id'] == person:
               top_three += 1
   print "results for " + str(total) + " faces"
-  print str(correct) + "/" + str(total) + " or " + str((correct * 1.0)/total) + "% accuracy correct"
+  print str(correct) + "/" + str(total) + " or " + str((correct * 100.0)/total) + "% accuracy correct"
   print str(top_three) + "/" + str(total) + " or " + str((top_three * 100.0)/total) + "% accuracy for top three"
  
 
