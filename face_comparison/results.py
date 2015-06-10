@@ -1,10 +1,13 @@
+#File contains code to test how accurate Face++ is at classifying faces
 import sys
 import os
 sys.path.insert(0, '..')
 from facepp.face_plus_plus import facial_detection, compare, add_face
 from facepp.train_groups import update_group
 
-
+'''Analyzes the recognition results for a given directory
+params:
+  directory-the directory to analyze results in(assumes there is another directory name {directory}_test that contains same people with different images)'''
 def analyze_results(directory):
   update_group(directory, directory)
   correct = 0
