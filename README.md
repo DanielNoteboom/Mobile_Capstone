@@ -40,7 +40,7 @@ This project is meant to help teacher's identify student's names in a classroom.
 
 Window
 
-![gui](https://raw.github.com/DanielNoteboom/Mobile_Capstone/gui.png)
+![gui](http://imgur.com/sLUAfYl)
 
 
 
