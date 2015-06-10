@@ -1,4 +1,8 @@
 # Mobile\_Capstone
+![Alt Pupil](http://pupil-labs.com/media/img/dev_front_crop.jpeg)
+##Overview
+This project is meant to help teacher's identify student's names in a classroom. It uses a pupil eye-tracker and facial detection/recognition algorithms to identify a potential student whose image/images already preloaded. 
+
 
 ##Launch Instructions
 * Follow the instructions by [Pupil Lab's](https://github.com/pupil-labs/pupil/wiki/Setup#run-from-source) to set up pupil player software
