@@ -32,4 +32,14 @@
 * gui-contains the main program and the code to run the gui
 * pupil-Contains are modified version of the pupil catpure software
 
+gui
+
+
+![gui](https://github.com/DanielNoteboom/Mobile_Capstone/gui.png)
+
+
+
+
+
+
 
