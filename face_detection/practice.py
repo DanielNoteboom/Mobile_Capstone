@@ -3,6 +3,10 @@ from PIL import Image
 
 from face import facial_detection
 
+#  This is a short testing file that can be called to
+#   try out just passing parameters to the facial 
+#   detection function.
+
 if len(sys.argv) > 1:
   img = sys.argv[1]
 else:
