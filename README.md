@@ -1,4 +1,4 @@
-# Mobile_Capstone
+# Mobile\_Capstone
 
 ##Technologies
 * Pupil Lab's open source pupil(hardware/software)
@@ -12,6 +12,4 @@
 * face\_detection-Contains facial detection code(OpenCV)
 * facepp-Contains Face++ Detection/Recognition/Training
 
-
-Run main.py in the gui folder.
 
