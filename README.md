@@ -40,7 +40,7 @@ This project is meant to help teacher's identify student's names in a classroom.
 
 Window
 
-![gui](http://imgur.com/sLUAfYl)
+![gui](http://i.imgur.com/sLUAfYl.png)
 
 
 
