@@ -1,8 +1,6 @@
 """
-
 Initial code take from tutorial on zetcode.com:
 zetcode.com/gui/tkinter/layout/
-
 """
 
 import os
