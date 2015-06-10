@@ -38,7 +38,8 @@ This project is meant to help teacher's identify student's names in a classroom.
 * gui-contains the main program and the code to run the gui
 * pupil-Contains are modified version of the pupil catpure software
 
-Window
+
+Sample of user interface:
 
 ![gui](http://i.imgur.com/sLUAfYl.png)
 
