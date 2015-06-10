@@ -1,7 +1,4 @@
-"""
-Initial code take from tutorial on zetcode.com:
-zetcode.com/gui/tkinter/layout/
-"""
+#!/usr/bin/env python
 
 import os
 import time
