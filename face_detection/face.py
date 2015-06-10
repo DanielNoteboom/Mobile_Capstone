@@ -12,16 +12,21 @@ params:
   picture-picture file(jpg, png, and other cv2 formats)
   x_coord-x coordinate of where we are looking for faces
   y_coord-y coordinate of where we are looking for faces
+  display_rect -- Determines if rectanges are drawn on the image around
+    the locations where the images were found
+  scale_factor -- Determines the factor by which to increase the rectangles
+    on each iteration. A larger value here will potentially miss some faces.
+  min_neighbors -- a parameter to the facial detection that determines how
+    many neighbors there must be of an image in order for it to be recognized.
  each result returned is a dictionary.
 '''
 def facial_detection(picture, x_coord, y_coord, display_rect = False,
-                    scale_factor=1.2,min_neighbors=3):
-  # controls the number of matches that the code returns
+                    scale_factor=1.2, min_neighbors=3):
   
   def find_distance(x1,y1,x2,y2):
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
   
-  # coordinates of the image here are from the upper left, with 
+  #  This is a pretrained classifier
   face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt2.xml')
   
   img = cv2.imread(picture)
@@ -37,7 +42,7 @@ def facial_detection(picture, x_coord, y_coord, display_rect = False,
     if display_rect:
       cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
   
-    # compare to center of rectangle
+    # compare dist to center of rectangle
     distance = find_distance(x_coord,y_coord,x+w/2.0,y+h/2.0)
     # insert tuple into queue -- the distance is used for ordering,
     #   since tuples are compared lexicographically
@@ -55,7 +60,7 @@ def facial_detection(picture, x_coord, y_coord, display_rect = False,
 def queue_to_list(q, list_size):
   # get a list of matches out of the queue
   matches = []
-  for i in range(NUM_MATCHES):
+  for i in range(list_size):
     try:
       match = q.get_nowait()
       matches.append(match)
@@ -64,10 +69,16 @@ def queue_to_list(q, list_size):
   return matches
 
 
-# Takes a list of matches, saves image files for them,
-#  appends the image file name and the associated distance
-#  to a result list
-def write_matches(matches, result_list, img, cv2):
+''' Takes a list of matches, saves image files for them,
+  appends the image file name and the associated distance
+  to a result list
+  params: 
+    matches -- a list of matches to save
+    result_list -- return parameter- save list here
+    img -- the image where detections was being done
+'''
+
+def write_matches(matches, result_list, img):
   for i in range(len(matches)):
     dist = matches[i][0]
     x,y,w,h = matches[i][1]
