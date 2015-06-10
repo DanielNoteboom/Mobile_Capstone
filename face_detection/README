@@ -1,0 +1,4 @@
+This directory contains some code for detecting faces in an image. It was used in the initial version of the application, but the gui is currently using the facepp code instead.
+
+
+

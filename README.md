@@ -23,7 +23,7 @@
 * FACE++ Facial Detection/Recognition
 * OpenBR Facial Recognition
 * OpenCV Facial Detection/Recognition
-* Tkinter Python GUI
+* TkInter Python GUI
 
 ##Repo Organization
 * face\_comparison-Contains facial comparison code(OpenBR/OpenCV)
