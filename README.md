@@ -10,8 +10,8 @@ This project is meant to help teacher's identify student's names in a classroom.
 * Follow the instructions by [Pupil Lab's](https://github.com/pupil-labs/pupil/wiki/Setup#run-from-source) to set up pupil player software
 * OpenCV/OpenBR are difficult to set up but are not needed if you are running the main.py on master
 * cd gui
-* ./gui.py to run with pupil (NOTE-Autofocus the pupil eye capture software before using it)
-* ./gui.py [IMAGE] to run with sample image
+* ./main.py to run with pupil (NOTE-Autofocus the pupil eye capture software before using it)
+* ./main.py [IMAGE] to run with sample image
 
 ##Running Instructions
 * The first time you plugin the pupil, autofocus the eye. This window is automatically minimized on start up.
@@ -37,7 +37,6 @@ This project is meant to help teacher's identify student's names in a classroom.
 * facepp-Contains Face++ Detection/Recognition/Training
 * gui-contains the main program and the code to run the gui
 * pupil-Contains are modified version of the pupil catpure software
-
 
 Sample of user interface:
 
