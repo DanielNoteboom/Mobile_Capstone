@@ -4,7 +4,7 @@ import os.path
 import shutil
 
 #controls the number of matches that the code will return
-IMAGE_DIR = "c1"
+IMAGE_DIR = "Demo1"
 
 # stores the parameter image in the comparison folder
 # @param image  the image path to be copied
