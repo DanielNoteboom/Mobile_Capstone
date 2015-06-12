@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 import sys
 import os
 count = 0
-STORED_PICTURES= 10
+STORED_PICTURES= 1000
 class ClickDetect(Plugin):
   def __init__(self, g_pool):
     super(ClickDetect, self).__init__(g_pool)

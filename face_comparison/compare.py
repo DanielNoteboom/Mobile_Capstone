@@ -8,6 +8,7 @@ import cv2
 #controls the number of matches that the code will return
 NUM_MATCHES = 3
 
+
 # returns an array with the top NUM_MATCHES comparison match
 #the format is a list of dictionaries with each match containing the 
 #following fields
@@ -75,8 +76,7 @@ def getMatches( cDir, scores ):
             idScores.append(0)
       if idScores:
         matches.put((-sum(idScores)/numImages, -sorted(idScores)[numImages/2], #average, median
-        #matches.put((-sorted(idScores)[numImages/2], -sum(idScores)/numImages, #median, average
-                    {
+                    { 
                       'id': identity,
                       'match_path': os.path.abspath(cDir + "/" + identity + "/" + images[bestImage])
                     }))
@@ -85,16 +85,16 @@ def getMatches( cDir, scores ):
 def matchInfo( matches ):
   hits = []
   for i in range(NUM_MATCHES):
-      try:
-          hit = matches.get_nowait()
-          hits.append({
-            'match_path': hit[2]['match_path'], 
-            'id': hit[2]['id'], 
-            'median': -hit[1],
-            'average': -hit[0]
-          })
-      except Queue.Empty:
-        return None
+    try:
+      hit = matches.get_nowait()
+      hits.append({
+        'match_path': hit[2]['match_path'], 
+        'id': hit[2]['id'], 
+        'median': -hit[1],
+        'average': -hit[0]
+      })
+    except Queue.Empty:
+      return None
   return hits
 
 def getMatchesBySubDirectory(cDir, comparisons): #tooSlow

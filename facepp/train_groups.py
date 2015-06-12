@@ -8,6 +8,12 @@ SERVER = 'http://api.us.faceplusplus.com/'
 LOCAL_DIRECTORY='../face_comparison'
 api = API(API_KEY,API_SECRET,srv=SERVER)
 
+#  This file contains some methods used to modify the model
+#   we have trained on faceplusplus. The commands here can
+#   be used to add, remove, and update these groups. This
+#   file can also be called from the command line to update
+#   the groups manually.
+
 '''Adds the class to the dataset
 params:
   group: group name to add to api
@@ -158,8 +164,6 @@ def checkArgs():
   else:
     usage()
     
-
-
 if __name__ == '__main__':
   if len(sys.argv) < 2 or len(sys.argv) > 4:
     usage()

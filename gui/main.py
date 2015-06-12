@@ -1,9 +1,4 @@
-"""
-
-Initial code take from tutorial on zetcode.com:
-zetcode.com/gui/tkinter/layout/
-
-"""
+#!/usr/bin/env python
 
 import os
 import time
@@ -20,14 +15,21 @@ from ttk import Entry
 from gui_helper import take_snapshot, run_pupil
 
 
+# This is to make the modules visible in the directory above us.
 sys.path.insert(0, '..')
 from facepp.face_plus_plus import facial_detection, compare, add_face
 from facepp.train_groups import update_group
 
+# This controls whether to launch the pupil player in the background. 
+#  In test mode, the matching is done against a static image supplied,
+#  rather than an image captured from the Pupil eye tracker.
 test_mode = False
-comparison_directory = "c1"
+# Default place to look for students
+comparison_directory = "Demo1"
 update_group(comparison_directory, comparison_directory)
 WIDGETS = {}
+info_box = None
+
 class Example(Frame):
     def onExit(self):
         self.quit()
@@ -38,7 +40,6 @@ class Example(Frame):
         self.initUI()
 
     def initUI(self):
-      #global test_mode
       if not test_mode:
         run_pupil()
 
@@ -66,9 +67,7 @@ class Example(Frame):
       # @params
       #   frame   the frame to attach filename to
       def insert_img(self, filename, frame, pic_path, label):
-        # First, remove anything currently in the frame
-        for child in frame.winfo_children():
-          child.destroy()
+        clear_frame(frame)
         sizeY = frame.winfo_height()
         sizeX = frame.winfo_width()
         img = Image.open(filename)
@@ -76,8 +75,12 @@ class Example(Frame):
         # Subtract 8 for various borders in the frame.
         img = img.resize((sizeX-8, sizeY-8), Image.ANTIALIAS)
         img = ImageTk.PhotoImage(img)
+        # The image is wrapped with a label to make it easier to place.
         lbl1 = Label(frame, image=img)
 
+        #  Closure function for callback. This function will save the captured
+        #   image of this specific panel, adding it to the model of the 
+        #   person associated with the face being clicked on
         def save_image(event):
           global comparison_directory
           folder = "../face_comparison/%s/%s" %(comparison_directory,label)
@@ -86,18 +89,15 @@ class Example(Frame):
           file_number = str(int(f.readline().rstrip().lstrip()) + 1)
           command = "cp " + pic_path + " " + folder + "/" +  file_number + ".jpg"
           add_face(pic_path, label)
-          
+          info_box['text'] = "Saved %s to %s" % (pic_path, folder)
           print command
           os.system(command)
 
         lbl1.image = img
         lbl1.bind('<Button-1>', save_image)
-        lbl1.setvar('pic', pic_path)
-        lbl1.setvar('label', label)
         lbl1.place(x=frame.winfo_x(), y=frame.winfo_y())
 
-      self.parent.title("Student Name Recollection Helper")
-      #self.pack(fill=BOTH, expand=1)
+      self.parent.title("Eyedentify")
 
       menubar = Menu(self.parent)
       self.parent.config(menu=menubar)
@@ -107,7 +107,8 @@ class Example(Frame):
       submenu = Menu(fileMenu)
       classes = get_dir_names()
       for cls in classes:
-        #  This nesting is sort of weird, but is necessary. 
+        #  This nesting is sort of weird, but is necessary due to
+        #    how closures work in a loop.
         def make_fn(x):
           def fn():
             global comparison_directory
@@ -116,26 +117,25 @@ class Example(Frame):
           return fn
         submenu.add_command(label=cls, command = make_fn(cls))
           
+      ##  File menu commands
       fileMenu.add_cascade(label='Choose Class', menu=submenu, underline=0)
       fileMenu.add_separator()
       fileMenu.add_command(label="Exit", command=self.onExit)
       menubar.add_cascade(label="File", menu=fileMenu)
 
-      style = Style()
+      style = Style()  #default style
       style.configure("TButton", padding=(0, 5, 0, 5), 
                       font='serif 10')
       style.configure("TFrame", background="#333")        
       style.configure("TLabel", background="#333")        
 
+      #  Effectively causes our window size to be 650 by 500
       self.columnconfigure(0,pad=10, minsize=650, weight=1)
       self.columnconfigure(1,pad=10)
       self.rowconfigure(0,pad=10, minsize=500, weight=1)
       self.rowconfigure(1,pad=10, weight=1)
 
       self.pack()
-
-      def other():
-        print "Not implemented"
 
       # Top box
       upper_frame = Frame(self, relief=RAISED )
@@ -145,7 +145,6 @@ class Example(Frame):
       #  that need to be accessed in the panel
       def save_image(event):
         print event.widget
-        print "save_image!!!"
         
         folder = "../face_comparison/" + comparison_directory + "/" + \
               event.widget.getvar('label')
@@ -157,7 +156,7 @@ class Example(Frame):
         os.system(command)
 
       def make_panel(panel_frame):
-        ### P1 is the main panel being made
+        ### p1 is the panel being made by this function.
         p1 = Frame(upper_frame, relief=RAISED, borderwidth =1)
         p1.pack(side = TOP, fill = BOTH, expand=1)
 
@@ -176,13 +175,12 @@ class Example(Frame):
 
         match_pictures = []
         match_labels = []
-        #  These are the tree matches in the panel
+        #  These are the three matches in the right side of the panel
         for i in range(3):
           pic_frame = Frame(p1, relief=RAISED, borderwidth =1)
           pic_frame.pack(side = LEFT, fill = BOTH, expand=1,padx=15, pady=4)
           pic = Frame(pic_frame, relief=RAISED, borderwidth =1)
           pic.pack(side = TOP, fill = BOTH, expand=1)
-          #pic.bind('<Button-1>', save_image)
           match_pictures.append(pic)
           label = Label(pic_frame, relief=RAISED, borderwidth =1, 
               text = "Match %d"%(i+1), width=15)
@@ -220,12 +218,7 @@ class Example(Frame):
           im.size # (width,height) tuple
           coord[0] = int(float(coord[0]) * im.size[0])
           coord[1] = int(float(coord[1]) * im.size[1])
-          print "file name " + pic_file
           faces = facial_detection(pic_file, coord[0], coord[1])
-          print "length of faces"
-          print len(faces)
-          print "faces"
-          print faces
           associated_matches = {}
           if len(faces) == 0:
             tkMessageBox.showwarning("Error",
@@ -262,17 +255,18 @@ class Example(Frame):
             panel_data[0]['left_pic_label']['text'] = "No faces detected"
 
 
-      def key(event):
-        # 'Enter' key triggers capture.
-        if event.char == '\r':
-          capture()
-
+      #def key(event):
+        ## 'Enter' key triggers capture.
+        #if event.char == '\r':
+          #capture()
+#
       # Bind to parent, so that the focus never leaves it. 
       self.parent.focus_set()
-      self.parent.bind('<Key>', key)
+      self.parent.bind('<Return>', lambda event: capture())
 
-      ent_msg = Label(self, text="Press Enter to capture gaze. Click on a matching face to add the captured face to the daset of the match.", background="#ececec")
-      ent_msg.grid(row=1,column=0)
+      global info_box
+      info_box = Label(self, text="Press Enter to capture gaze. Click on a matching face to add the captured face to the daset of the match.", background="#ececec")
+      info_box.grid(row=1,column=0)
 
       # Some weird hack to bring this window to the front as it is launched. 
       #  Won't work on windows.
@@ -300,9 +294,10 @@ def main():
 def removeQuit(): 
   os.system("rm ../pupil/pupil_src/capture/pic/quit.txt")
   os.system("touch ../pupil/pupil_src/capture/pic/quit.txt")
+
 if __name__ == '__main__':
   if len(sys.argv) > 1:
     test_mode = True
-  removeQuit()#need to make sure quit file is gone!
+  removeQuit() #need to make sure quit file is gone!
   main()  
 
